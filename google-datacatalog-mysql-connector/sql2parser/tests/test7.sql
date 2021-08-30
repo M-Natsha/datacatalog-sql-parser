@@ -1,0 +1,11 @@
+INSERT INTO
+  t1
+SELECT
+  *
+FROM
+  t2
+UNION ALL
+SELECT
+  *
+FROM
+  t3
