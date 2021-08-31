@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.*;
 import org.apache.calcite.config.Lex;
 import org.apache.calcite.sql.*;
 import org.apache.calcite.sql.parser.*;
+import org.apache.calcite.sql.parser.ddl.SqlDdlParserImpl;
 import org.apache.calcite.sql.validate.SqlConformanceEnum;
 
 import java.util.Scanner;
@@ -17,61 +18,42 @@ public class ParseSql {
         return true;
     }
 
-    final static String createStatmentRegex = "create\\s+table\\s+([a-zA-Z][a-zA-Z_1-9]*)\\s*(\\(((?s).*)\\))?\\sas((?s).*)";
+    public static boolean isDdlOperation(String query) {
+        String[] ddlRegex = {
+                "\\s*create\\s+((?s).*)" // Create query
+                ,"\\s*alter\\s+((?s).*)" // Alter query
+                ,"\\s*drop\\s+((?s).*)" // Drop query
+        };
 
-    public static boolean isCreateStatement(String query) {
-        // check if follows create table as pattern
-        // and extract group
-        final Pattern pattern = Pattern.compile(createStatmentRegex);
-        return pattern.matcher(query).matches();
+        for(String validator: ddlRegex) {
+            final Pattern pattern = Pattern.compile(validator, Pattern.CASE_INSENSITIVE);
+            if(pattern.matcher(query).matches()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static SqlNode parse(String query) throws SqlParseException {
-        query = query.toLowerCase();
-        // consider create table as possibility
-        if (isCreateStatement(query)) {
-            // TODO: use really positions
-            final SqlParserPos dummyPos = new SqlParserPos(0, 0);
-            final Pattern pattern = Pattern.compile(createStatmentRegex);
+        SqlParser par;
+        // Change the parser depending on Sql query type
+        if(isDdlOperation(query)) {
+            SqlParser.Config sqlParserConfig = SqlParser.configBuilder()
+                    .setParserFactory(SqlDdlParserImpl.FACTORY)
+                    .setConformance(SqlConformanceEnum.MYSQL_5)
+                    .setLex(Lex.MYSQL)
+                    .build();
+            par = SqlParser.create(query, sqlParserConfig);
+        } else {
+            SqlParser.Config sqlParserConfig = SqlParser.configBuilder()
+                    .setConformance(SqlConformanceEnum.MYSQL_5)
+                    .setLex(Lex.MYSQL)
+                    .build();
 
-            // find Matching patterns
-            Matcher matcher = pattern.matcher(query);
-            matcher.find();
-
-            String tableName = matcher.group(1);
-            SqlIdentifier tableIdentfier = new SqlIdentifier(tableName, dummyPos);
-            SqlNodeList sqlNodeList = new SqlNodeList(dummyPos);
-            if (matcher.group(3) != null) {
-                String schema = matcher.group(3);
-                String[] columns = schema.split(",");
-
-                for (String col : columns) {
-                    // handle possible error here
-                    String[] definetion = col.split(" ");
-                    // TODO: add schema variables to the sqlNodeList
-                    SqlIdentifier colIdentifier = new SqlIdentifier(definetion[0], dummyPos);
-//                    org.apache.calcite.sql.SqlColu
-                }
-
-            }
-
-            // parse the select sql separately
-            String selectQuery = matcher.group(4);
-            SqlParser par = SqlParser.create(selectQuery);
-            SqlNode selectNode = par.parseStmtList();
-            SqlOperator operator = new SqlOperator("CREATE", SqlKind.CREATE_TABLE, 0, 0, null, null, null) {
-                @Override
-                public SqlSyntax getSyntax() {
-                    return null;
-                }
-            };
-
-            SqlCreate createNode;
-            createNode = new SpecialSqlCreateTable(dummyPos, false, false, tableIdentfier, sqlNodeList, selectNode);
-            return createNode;
+            par = SqlParser.create(query, sqlParserConfig);
         }
 
-        SqlParser par = SqlParser.create(query);
         return par.parseStmtList();
     }
 

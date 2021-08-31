@@ -34,6 +34,12 @@
             <artifactId>calcite-core</artifactId>
             <version>1.27.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.calcite/calcite-server -->
+        <dependency>
+            <groupId>org.apache.calcite</groupId>
+            <artifactId>calcite-server</artifactId>
+            <version>1.27.0</version>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
