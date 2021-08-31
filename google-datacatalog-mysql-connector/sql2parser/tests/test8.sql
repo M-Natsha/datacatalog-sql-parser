@@ -3,7 +3,8 @@ INSERT INTO
 SELECT
   *,
   col1 as x,
-  func(col2, col3)
+  func(col2, col3),
+  x.y.z
 FROM
   table2;
 INSERT INTO
