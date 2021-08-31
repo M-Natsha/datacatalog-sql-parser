@@ -28,10 +28,10 @@ jsdata = json.loads(x, object_hook=lambda d: SimpleNamespace(**d))
 
 print(x)
 
-try:
-    for sqlQuery in jsdata:
-        lineage = extractLineage(sqlQuery)
-        print(lineage)
-except:
-    lineage = extractLineage(jsdata)
+
+for sqlQuery in jsdata:
+    lineage = extractLineage(sqlQuery)
     print(lineage)
+
+# lineage = extractLineage(jsdata)
+# print(lineage)

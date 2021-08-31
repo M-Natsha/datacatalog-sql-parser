@@ -2,16 +2,6 @@ from functools import reduce
 from operation import *
 
 
-def getColumnInfo(node):
-    if hasattr(node, 'operator'):
-        return operatorFuncMap[node.operator.kind](node)
-
-    if node.names[0] == '':
-        return '*'
-
-    return node.names[0]
-
-
 def HandleUnion(node):
     par = {
         "operation": "UNION",
