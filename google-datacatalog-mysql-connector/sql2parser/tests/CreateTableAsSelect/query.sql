@@ -1,4 +1,4 @@
-CREATE TABLE random_table(blabla varchar(25), balssf, bsdbs) AS
+CREATE TABLE random_table AS
 SELECT
   users.*,
   cars.id as car_id,

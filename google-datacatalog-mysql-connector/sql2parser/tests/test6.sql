@@ -1,6 +1,0 @@
-INSERT INTO
-  t1
-SELECT
-  *
-FROM
-  t2
