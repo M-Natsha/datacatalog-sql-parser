@@ -1,0 +1,24 @@
+{
+    "tableName" : {
+        "schema" : {
+            "columnName" : [{
+                "cursorstamp" : 345,
+                "exists": true
+            }] 
+        },
+        
+        "logs": [
+            {
+                "cusorstamp": 345,
+                "action": {
+                    "type": "ACTIONTYPE",
+                    "columns": [
+                        "x",
+                        "y",
+                        "z"
+                    ]
+                }
+            }
+        ]
+    }
+}

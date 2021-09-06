@@ -1,19 +1,19 @@
 import json
 from types import SimpleNamespace
 from functools import reduce
-from sqlStatement import *
+from operation import *
 
 
 def handleInsert(node):
     # extract target data
     target = {
-        "table": node.targetTable.names[0],
-        "columns": []
+        "table": getColumnInfo(node.targetTable),
+        "columns": ['*']
     }
 
     if(node.columnList != None):
         target['columns'] = reduce(
-            lambda x, y: x + [getColumnInfo(y)], node.columnList, [])
+            lambda x, y: x + getColumnInfo(y), node.columnList, [])
 
     # exctract source data
     source = handleSource(node)
@@ -30,14 +30,24 @@ def handleQuery(node):
 
 
 def handleCreateTable(node):
-    return {
+    res = {
         "target": {
-            "table": node.name.names,
-            "columns": reduce(lambda x, y: x + [getColumnInfo(y)], node.columnList, [])
+            "tables": [],
+            "columns": []
         },
 
         "source": handleSource(node.query)
     }
+
+    res['target']['tables'] = getColumnInfo(node.name)
+
+    if(hasattr(node, 'columnList') and node.columnList != None):
+        res['target']['columns'] = reduce(
+            lambda x, y: x + [getColumnInfo(y)], node.columnList, [])
+    else:
+        res['target']['columns'] = ['*']
+
+    return res
 
 
 def extractLineage(node):
