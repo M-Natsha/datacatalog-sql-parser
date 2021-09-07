@@ -17,9 +17,9 @@ noLineageQueryPatterns = [
 ]
 
 ddlRegex = [
-    re.compile("\\s*(create)\\s+((?s).*)", re.IGNORECASE),
-    re.compile("\\s*(alter)\\s+((?s).*)", re.IGNORECASE),
-    re.compile("\\s*(drop)\\s+((?s", re.IGNORECASE)
+    re.compile("\\s*(create)\\s+(.*)", re.IGNORECASE),
+    re.compile("\\s*(alter)\\s+(.*)", re.IGNORECASE),
+    re.compile("\\s*(drop)\\s+(.*)", re.IGNORECASE)
 ]
 
 
@@ -40,8 +40,7 @@ def isDdlQuery():
 
 def parseQuery(query):
     path2jar = os.getcwd(
-    ) + "/google-datacatalog-mysql-connector/extractLineage/target"
-    + "/test-1.0-SNAPSHOT-jar-with-dependencies.jar"
+    ) + "/google-datacatalog-mysql-connector/extractLineage/target/test-1.0-SNAPSHOT-jar-with-dependencies.jar"
     x = subprocess.check_output(
         ["java", "-jar", path2jar, "-p", query],
         stderr=subprocess.STDOUT)  # doesn't capture output

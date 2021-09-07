@@ -18,12 +18,7 @@ public class ParseSql {
 
     public static void main(String[] args) throws Exception {
         System.out.println("started");
-        String query = "UPDATE target\n" +
-                "SET\n" +
-                "    targetTable.t1  = sourceTable.cola,\n" +
-                "    targetTable.t2 = sourceTable.colb, \n" +
-                "    targetTable.3 = sourceTable.colc, \n" +
-                "    targetTable.t4 = sourceTable.cold ";
+        String query = args[0];
 
         String result = parseSqlToJson(query);
 
