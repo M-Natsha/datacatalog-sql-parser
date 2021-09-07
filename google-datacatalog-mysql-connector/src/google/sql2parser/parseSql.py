@@ -16,6 +16,14 @@ noLineageQueryPatterns = [
     re.compile("\\s*use\\s+(.*)", re.IGNORECASE)
 ]
 
+
+ddlRegex = [
+    re.compile("\\s*(create)\\s+((?s).*)", re.IGNORECASE),
+    re.compile("\\s*(alter)\\s+((?s).*)", re.IGNORECASE),
+    re.compile("\\s*(drop)\\s+((?s", re.IGNORECASE)
+]
+
+
 def hasLineage(query):
     global noLineageQueryPatterns
 
@@ -25,6 +33,11 @@ def hasLineage(query):
 
     # else it has lineage info
     return True
+
+
+def isDdlQuery():
+    return True
+
 
 def parseQuery(query):
     path2jar = os.getcwd() + "/google-datacatalog-mysql-connector/extractLineage/target/test-1.0-SNAPSHOT-jar-with-dependencies.jar"
