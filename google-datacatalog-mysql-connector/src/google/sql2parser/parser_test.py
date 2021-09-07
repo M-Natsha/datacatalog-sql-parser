@@ -34,6 +34,7 @@ def testSqlfile(test, filename):
 
 
 class TestParser(unittest.TestCase):
+
     def test_simple_select(self):
         testname = "simpleSelect"
         testSqlfile(self, testname)

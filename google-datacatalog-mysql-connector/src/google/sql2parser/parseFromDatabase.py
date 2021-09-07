@@ -1,5 +1,5 @@
 from datetime import timezone
-from parseSql import parseQuery, hasLineage
+from parseSql import hasLineage
 from tableLineage import getTableLineage
 
 # TODO: use import instead of copying the class
@@ -10,10 +10,11 @@ def _create_rdbms_connection(connection_args):
     # if the connector reads from a CSV file, this is not used.
     from mysql.connector import connect  # noqa C6204
 
-    con = connect(database=connection_args['database'],
-                  host=connection_args['host'],
-                  user=connection_args['user'],
-                  password=connection_args['pass'])
+    con = connect(
+        database=connection_args['database'],
+        host=connection_args['host'],
+        user=connection_args['user'],
+        password=connection_args['pass'])
     return con
 
 
@@ -31,18 +32,17 @@ con = _create_rdbms_connection({
     "pass": "Test1234"
 })
 
-
 logs = readLogs(con)
 
 for log in logs:
-    if(log["command_type"].lower() == "query"):
+    if log["command_type"].lower() == "query":
         # getTimeStamp
         datetime = log["event_time"]
         timestamp = datetime.replace(tzinfo=timezone.utc).timestamp()
 
         query = log["argument"].decode('ascii')
         print(timestamp, query)
-        if(hasLineage(query)):
+        if hasLineage(query):
             try:
                 lineage = getTableLineage(query)
                 print(lineage)

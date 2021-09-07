@@ -10,8 +10,8 @@ def getQueryAndExpected(filename):
 
     # open files
     f1 = open(str(scriptDir) + "/tests/" + filename + '/query.sql', "r")
-    f2 = open(str(scriptDir) + "/tests/" +
-              filename + '/tableLineage.json', "r")
+    f2 = open(
+        str(scriptDir) + "/tests/" + filename + '/tableLineage.json', "r")
 
     # read files
     query, parsed = f1.read(), f2.read()
@@ -35,6 +35,7 @@ def testSqlfile(test, filename):
 
 
 class TestParser(unittest.TestCase):
+
     def test_simple_select(self):
         testname = "simpleSelect"
         testSqlfile(self, testname)

@@ -1,5 +1,7 @@
 # how to organize the database for the schemas
-# create columns with cursorstamp range in which this table is available and create a log history to show all
+# create columns with cursorstamp range in which this table is available
+# and create a log history to show all
+
 
 def isExist(action):
     # TODO: Write code that check if exists depending on the action
@@ -20,12 +22,9 @@ class TableSchema:
         self.logs += [info]
 
         for col in info.action.columns:
-            state = {
-                "cursorstamp": cursorstamp,
-                "exists": isExist(info)
-            }
+            state = {"cursorstamp": cursorstamp, "exists": isExist(info)}
 
-            if(col in self.schema):
+            if col in self.schema:
                 self.schema[col] += [state]
             else:
                 self.schema = [state]

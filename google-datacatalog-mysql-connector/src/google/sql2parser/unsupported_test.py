@@ -34,6 +34,7 @@ def testSqlfile(test, filename):
 
 
 class UnsupporterdTestParser(unittest.TestCase):
+
     def test_create_table_with_values_as_select(self):
         testname = "CreateTableWithValuesAsSelect"
         testSqlfile(self, testname)
