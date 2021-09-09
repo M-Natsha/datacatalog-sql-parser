@@ -1,5 +1,5 @@
 from functools import reduce
-from operation import getColumnInfo, handleSource
+from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape.parse.operation import getColumnInfo, handleSource
 
 
 def handleInsert(node):

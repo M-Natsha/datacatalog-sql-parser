@@ -1,43 +1,46 @@
-from parseSql import parseQuery
+import logging
+from google.datacatalog_connectors.mysql_.scrape import metadata_scraper
+from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape import logs_reader, table_lineage_extractor
 
 
-def getTableLineageFromNode(node):
+class tableLineageScraper():
+    def __init__(self, connection_args):
+        self.connection_args = connection_args
 
-    if isinstance(node, str):
-        return node
+    def scrape(self):
+        # get connection
+        connector = self._get_connector()()
+        connection = connector.get_connection(self.connection_args)
 
-    if isinstance(node, list):
-        tableArray = []
-        for source in node:
-            source = getTableLineageFromNode(source)
-            if isinstance(source, list):
-                tableArray += source
-            else:
-                tableArray += [source]
+        # read logs
+        reader = self._get_log_reader()(connection)
+        logs = reader.readLogs()
 
-        return list(dict.fromkeys(tableArray))
+        # extract lineage
+        lineageList = []
+        lineage_extractor = self._get_lineage_extractor()()
 
-    if 'target' in node and 'source' in node:
-        return {
-            'target': getTableLineageFromNode(node['target']),
-            'source': getTableLineageFromNode(node['source'])
-        }
+        for log in logs:
+            if log['command_type'] == 'Query':
+                query = log['argument'].decode('ascii')
+                if lineage_extractor.queryHasLineage(query):
+                    try:
+                        lineage = lineage_extractor.extract(query)
+                        print(lineage)
+                        lineageList.extend(lineage)
+                    except:
+                        logging.error("Parse error: Couldn't parse " + query)
+                else:
+                    logging.info("Query has no lineage (Skipped): " + query)
 
-    # TODO: unite table format
-    if 'tables' in node:
-        return getTableLineageFromNode(node['tables'])
+        # return lineage info
+        return lineageList
 
-    if 'table' in node:
-        return getTableLineageFromNode(node['table'])
+    def _get_connector(self):
+        return metadata_scraper.MetadataScraper
 
-    if 'operation' in node:
-        return getTableLineageFromNode(node['input'])
+    def _get_log_reader(self):
+        return logs_reader.logsReader
 
-
-def getTableLineage(query):
-    parseTree = parseQuery(query)
-    return getTableLineageFromNode(parseTree)
-
-
-result = getTableLineage("SELECT * FROM t1")
-print(result)
+    def _get_lineage_extractor(self):
+        return table_lineage_extractor.tableLineageExtractor
