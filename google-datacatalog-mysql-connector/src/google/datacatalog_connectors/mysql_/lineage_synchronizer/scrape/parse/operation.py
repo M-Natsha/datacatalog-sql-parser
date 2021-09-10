@@ -84,12 +84,15 @@ def getColumnInfo(node):
     if hasattr(node, 'name'):
         return getColumnInfo(node.name)
 
-    names = []
+    names = ""
     for name in node.names:
+        if names != "":
+            names += "."
+            
         if name == '':
-            names += ['*']
+            names += '*'
         else:
-            names += [name]
+            names += name
 
     return names
 

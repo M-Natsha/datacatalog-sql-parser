@@ -1,18 +1,10 @@
 {
    "target":{
-      "tables":[
-         "random_table"
-      ],
+      "tables":"random_table",
       "columns":[
-         [
-            "blabla"
-         ],
-         [
-            "balssf"
-         ],
-         [
-            "bsdbs"
-         ]
+         "blabla",
+         "balssf",
+         "bsdbs"
       ]
    },
    "source":{
@@ -20,9 +12,7 @@
          "t1"
       ],
       "columns":[
-         [
-            "*"
-         ]
+         "*"
       ]
    }
 }

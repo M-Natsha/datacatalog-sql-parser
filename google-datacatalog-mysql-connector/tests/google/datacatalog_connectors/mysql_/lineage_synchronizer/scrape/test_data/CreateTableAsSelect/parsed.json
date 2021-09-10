@@ -1,8 +1,6 @@
 {
    "target":{
-      "tables":[
-         "random_table"
-      ],
+      "tables":"random_table",
       "columns":[
          "*"
       ]
@@ -20,28 +18,14 @@
          ]
       },
       "columns":[
-         [
-            "users",
-            "*"
-         ],
+         "users.*",
          {
             "operation":"AS",
-            "input":[
-               "cars",
-               "id"
-            ],
-            "output":[
-               "car_id"
-            ]
+            "input":"cars.id",
+            "output":"car_id"
          },
-         [
-            "cars",
-            "vendor"
-         ],
-         [
-            "cars",
-            "model"
-         ]
+         "cars.vendor",
+         "cars.model"
       ]
    }
 }

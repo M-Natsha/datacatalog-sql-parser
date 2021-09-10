@@ -7,6 +7,7 @@ class TestTableLineage():
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
         result = tableLineageExtractor().extract(query)
+        print(result)
         assert result == expected
 
     def test_complex_select_with_join(self, helpers):
@@ -14,6 +15,7 @@ class TestTableLineage():
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
         result = tableLineageExtractor().extract(query)
+        print(result)
         assert result == expected
 
     def test_complex_select_with_union_and_join(self, helpers):
@@ -21,6 +23,7 @@ class TestTableLineage():
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
         result = tableLineageExtractor().extract(query)
+        print(result)
         assert result == expected
 
     def test_create_table_as_select(self, helpers):
@@ -28,6 +31,7 @@ class TestTableLineage():
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
         result = tableLineageExtractor().extract(query)
+        print(result)
         assert result == expected
 
     def test_create_table_with_values_as_select2(self, helpers):
@@ -35,6 +39,7 @@ class TestTableLineage():
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
         result = tableLineageExtractor().extract(query)
+        print(result)
         assert result == expected
 
     def test_simple_insert(self, helpers):
@@ -42,5 +47,6 @@ class TestTableLineage():
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
         result = tableLineageExtractor().extract(query)
+        print(result)
         assert result == expected
         

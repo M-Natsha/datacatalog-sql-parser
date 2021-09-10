@@ -1,7 +1,6 @@
 {
-   "target":[
-      "random_table"
-   ],
+   "target": "random_table"
+   ,
    "source":[
       "users",
       "cars"

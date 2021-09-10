@@ -31,133 +31,84 @@
                                                             "input":[
                                                                {
                                                                   "operation":"AS",
-                                                                  "input":[
-                                                                     "employees"
-                                                                  ],
-                                                                  "output":[
-                                                                     "e"
-                                                                  ]
+                                                                  "input":"employees",
+                                                                  "output":"e"
                                                                },
                                                                {
                                                                   "operation":"AS",
-                                                                  "input":[
-                                                                     "jobs"
-                                                                  ],
-                                                                  "output":[
-                                                                     "j"
-                                                                  ]
+                                                                  "input":"jobs",
+                                                                  "output":"j"
                                                                }
                                                             ]
                                                          },
                                                          {
                                                             "operation":"AS",
-                                                            "input":[
-                                                               "employees"
-                                                            ],
-                                                            "output":[
-                                                               "m"
-                                                            ]
+                                                            "input":"employees",
+                                                            "output":"m"
                                                          }
                                                       ]
                                                    },
                                                    {
                                                       "operation":"AS",
-                                                      "input":[
-                                                         "departments"
-                                                      ],
-                                                      "output":[
-                                                         "d"
-                                                      ]
+                                                      "input":"departments",
+                                                      "output":"d"
                                                    }
                                                 ]
                                              },
                                              {
                                                 "operation":"AS",
-                                                "input":[
-                                                   "employees"
-                                                ],
-                                                "output":[
-                                                   "dm"
-                                                ]
+                                                "input":"employees",
+                                                "output":"dm"
                                              }
                                           ]
                                        },
                                        {
                                           "operation":"AS",
-                                          "input":[
-                                             "locations"
-                                          ],
-                                          "output":[
-                                             "l"
-                                          ]
+                                          "input":"locations",
+                                          "output":"l"
                                        }
                                     ]
                                  },
                                  {
                                     "operation":"AS",
-                                    "input":[
-                                       "countries"
-                                    ],
-                                    "output":[
-                                       "c"
-                                    ]
+                                    "input":"countries",
+                                    "output":"c"
                                  }
                               ]
                            },
                            {
                               "operation":"AS",
-                              "input":[
-                                 "regions"
-                              ],
-                              "output":[
-                                 "r"
-                              ]
+                              "input":"regions",
+                              "output":"r"
                            }
                         ]
                      },
                      {
                         "operation":"AS",
-                        "input":[
-                           "job_history"
-                        ],
-                        "output":[
-                           "jh"
-                        ]
+                        "input":"job_history",
+                        "output":"jh"
                      }
                   ]
                },
                {
                   "operation":"AS",
-                  "input":[
-                     "jobs"
-                  ],
-                  "output":[
-                     "jj"
-                  ]
+                  "input":"jobs",
+                  "output":"jj"
                }
             ]
          },
          {
             "operation":"AS",
-            "input":[
-               "departments"
-            ],
-            "output":[
-               "dd"
-            ]
+            "input":"departments",
+            "output":"dd"
          }
       ]
    },
    "columns":[
       {
          "operation":"AS",
-         "input":[
-            "e",
-            "employee_id"
-         ],
-         "output":[
-            "Employee #"
-         ]
+         "input":"e.employee_id",
+         "output":"Employee #"
       },
       {
          "operation":"AS",
@@ -167,75 +118,49 @@
                {
                   "operation":"FUNCTION",
                   "input":[
-                     [
-                        "e",
-                        "first_name"
-                     ],
+                     "e.first_name",
                      [
                         " "
                      ]
                   ],
                   "output":"||"
                },
-               [
-                  "e",
-                  "last_name"
-               ]
+               "e.last_name"
             ],
             "output":"||"
          },
-         "output":[
-            "Name"
-         ]
+         "output":"Name"
       },
       {
          "operation":"AS",
-         "input":[
-            "e",
-            "email"
-         ],
-         "output":[
-            "Email"
-         ]
+         "input":"e.email",
+         "output":"Email"
       },
       {
          "operation":"AS",
-         "input":[
-            "e",
-            "phone_number"
-         ],
-         "output":[
-            "Phone"
-         ]
+         "input":"e.phone_number",
+         "output":"Phone"
       },
       {
          "operation":"AS",
          "input":{
             "operation":"FUNCTION",
             "input":[
-               [
-                  "e",
-                  "hire_date"
-               ],
+               "e.hire_date",
                [
                   "MM/DD/YYYY"
                ]
             ],
             "output":"TO_CHAR"
          },
-         "output":[
-            "Hire Date"
-         ]
+         "output":"Hire Date"
       },
       {
          "operation":"AS",
          "input":{
             "operation":"FUNCTION",
             "input":[
-               [
-                  "e",
-                  "salary"
-               ],
+               "e.salary",
                [
                   "L99G999D99"
                ],
@@ -245,19 +170,12 @@
             ],
             "output":"TO_CHAR"
          },
-         "output":[
-            "Salary"
-         ]
+         "output":"Salary"
       },
       {
          "operation":"AS",
-         "input":[
-            "e",
-            "commission_pct"
-         ],
-         "output":[
-            "Comission %"
-         ]
+         "input":"e.commission_pct",
+         "output":"Comission %"
       },
       {
          "operation":"AS",
@@ -297,10 +215,7 @@
                                                                            [
                                                                               "works as "
                                                                            ],
-                                                                           [
-                                                                              "j",
-                                                                              "job_title"
-                                                                           ]
+                                                                           "j.job_title"
                                                                         ],
                                                                         "output":"||"
                                                                      },
@@ -310,10 +225,7 @@
                                                                   ],
                                                                   "output":"||"
                                                                },
-                                                               [
-                                                                  "d",
-                                                                  "department_name"
-                                                               ]
+                                                               "d.department_name"
                                                             ],
                                                             "output":"||"
                                                          },
@@ -323,10 +235,7 @@
                                                       ],
                                                       "output":"||"
                                                    },
-                                                   [
-                                                      "dm",
-                                                      "first_name"
-                                                   ]
+                                                   "dm.first_name"
                                                 ],
                                                 "output":"||"
                                              },
@@ -336,10 +245,7 @@
                                           ],
                                           "output":"||"
                                        },
-                                       [
-                                          "dm",
-                                          "last_name"
-                                       ]
+                                       "dm.last_name"
                                     ],
                                     "output":"||"
                                  },
@@ -349,10 +255,7 @@
                               ],
                               "output":"||"
                            },
-                           [
-                              "m",
-                              "first_name"
-                           ]
+                           "m.first_name"
                         ],
                         "output":"||"
                      },
@@ -362,16 +265,11 @@
                   ],
                   "output":"||"
                },
-               [
-                  "m",
-                  "last_name"
-               ]
+               "m.last_name"
             ],
             "output":"||"
          },
-         "output":[
-            "Current Job"
-         ]
+         "output":"Current Job"
       },
       {
          "operation":"AS",
@@ -384,10 +282,7 @@
                      {
                         "operation":"FUNCTION",
                         "input":[
-                           [
-                              "j",
-                              "min_salary"
-                           ],
+                           "j.min_salary",
                            [
                               "L99G999D99"
                            ],
@@ -406,10 +301,7 @@
                {
                   "operation":"FUNCTION",
                   "input":[
-                     [
-                        "j",
-                        "max_salary"
-                     ],
+                     "j.max_salary",
                      [
                         "L99G999D99"
                      ],
@@ -422,9 +314,7 @@
             ],
             "output":"||"
          },
-         "output":[
-            "Current Salary"
-         ]
+         "output":"Current Salary"
       },
       {
          "operation":"AS",
@@ -461,20 +351,14 @@
                                                                      {
                                                                         "operation":"FUNCTION",
                                                                         "input":[
-                                                                           [
-                                                                              "l",
-                                                                              "street_address"
-                                                                           ],
+                                                                           "l.street_address",
                                                                            [
                                                                               ", "
                                                                            ]
                                                                         ],
                                                                         "output":"||"
                                                                      },
-                                                                     [
-                                                                        "l",
-                                                                        "postal_code"
-                                                                     ]
+                                                                     "l.postal_code"
                                                                   ],
                                                                   "output":"||"
                                                                },
@@ -484,10 +368,7 @@
                                                             ],
                                                             "output":"||"
                                                          },
-                                                         [
-                                                            "l",
-                                                            "city"
-                                                         ]
+                                                         "l.city"
                                                       ],
                                                       "output":"||"
                                                    },
@@ -497,10 +378,7 @@
                                                 ],
                                                 "output":"||"
                                              },
-                                             [
-                                                "l",
-                                                "state_province"
-                                             ]
+                                             "l.state_province"
                                           ],
                                           "output":"||"
                                        },
@@ -510,10 +388,7 @@
                                     ],
                                     "output":"||"
                                  },
-                                 [
-                                    "c",
-                                    "country_name"
-                                 ]
+                                 "c.country_name"
                               ],
                               "output":"||"
                            },
@@ -523,10 +398,7 @@
                         ],
                         "output":"||"
                      },
-                     [
-                        "r",
-                        "region_name"
-                     ]
+                     "r.region_name"
                   ],
                   "output":"||"
                },
@@ -536,19 +408,12 @@
             ],
             "output":"||"
          },
-         "output":[
-            "Location"
-         ]
+         "output":"Location"
       },
       {
          "operation":"AS",
-         "input":[
-            "jh",
-            "job_id"
-         ],
-         "output":[
-            "History Job ID"
-         ]
+         "input":"jh.job_id",
+         "output":"History Job ID"
       },
       {
          "operation":"AS",
@@ -582,10 +447,7 @@
                                                          {
                                                             "operation":"FUNCTION",
                                                             "input":[
-                                                               [
-                                                                  "jh",
-                                                                  "start_date"
-                                                               ],
+                                                               "jh.start_date",
                                                                [
                                                                   "MM/DD/YYYY"
                                                                ]
@@ -604,10 +466,7 @@
                                              {
                                                 "operation":"FUNCTION",
                                                 "input":[
-                                                   [
-                                                      "jh",
-                                                      "end_date"
-                                                   ],
+                                                   "jh.end_date",
                                                    [
                                                       "MM/DD/YYYY"
                                                    ]
@@ -623,10 +482,7 @@
                                     ],
                                     "output":"||"
                                  },
-                                 [
-                                    "jj",
-                                    "job_title"
-                                 ]
+                                 "jj.job_title"
                               ],
                               "output":"||"
                            },
@@ -636,10 +492,7 @@
                         ],
                         "output":"||"
                      },
-                     [
-                        "dd",
-                        "department_name"
-                     ]
+                     "dd.department_name"
                   ],
                   "output":"||"
                },
@@ -649,9 +502,7 @@
             ],
             "output":"||"
          },
-         "output":[
-            "History Job Title"
-         ]
+         "output":"History Job Title"
       }
    ]
 }
