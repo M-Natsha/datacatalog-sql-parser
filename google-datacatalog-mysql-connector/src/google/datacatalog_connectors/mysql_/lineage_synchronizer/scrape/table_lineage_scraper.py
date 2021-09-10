@@ -28,8 +28,10 @@ class tableLineageScraper():
                         lineage = lineage_extractor.extract(query)
                         print(lineage)
                         lineageList.extend(lineage)
-                    except:
+                    except Exception as e:
                         logging.error("Parse error: Couldn't parse " + query)
+                        print(e)
+                        
                 else:
                     logging.info("Query has no lineage (Skipped): " + query)
 

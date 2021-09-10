@@ -112,7 +112,6 @@ public class ParseSql {
                e.printStackTrace();
            }
 
-
            // TODO merge the 2 queries results
            return node1;
        }
