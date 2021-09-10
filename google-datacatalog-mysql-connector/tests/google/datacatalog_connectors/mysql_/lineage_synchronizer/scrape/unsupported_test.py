@@ -1,52 +1,28 @@
-import pathlib
-import unittest
-import parseSql
-import json
+from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape.parse import parseSql
+from .utils import *
 
-
-def getQueryAndExpected(filename):
-    # get relative path
-    scriptDir = pathlib.Path(__file__).parent.resolve()
-
-    # open files
-    f1 = open(str(scriptDir) + "/tests/" + filename + '/query.sql', "r")
-    f2 = open(str(scriptDir) + "/tests/" + filename + '/parsed.json', "r")
-
-    # read files
-    query, parsed = f1.read(), f2.read()
-
-    # close files
-    f1.close()
-    f2.close()
-
-    return query, parsed
-
-
-def testSqlfile(test, filename):
-    query, expectedResult = getQueryAndExpected(filename)
-    expectedResult = json.loads(expectedResult)
-    result = parseSql.parseQuery(query)
-    print("")
-    print("Result: ", result)
-    print("Expected: ", expectedResult)
-
-    test.assertEqual(result, expectedResult)
-
-
-class UnsupporterdTestParser(unittest.TestCase):
-
-    def test_create_table_with_values_as_select(self):
+class TestSqlParser(): 
+    @pytest.mark.skip(reason="no way of currently testing this")
+    def test_create_table_with_values_as_select(self, helpers):
         testname = "CreateTableWithValuesAsSelect"
-        testSqlfile(self, testname)
-
-    def test_simple_insert_values(self):
+        query = helpers.getQueryForTest(testname)
+        expected = helpers.getParsedResultForTest(testname)
+        result = parseSql.MySqlParser().parseQuery(query)
+        assert result == expected
+        
+    @pytest.mark.skip(reason="no way of currently testing this")
+    def test_simple_insert_values(self, helpers):
         testname = "simpleInsertValues"
-        testSqlfile(self, testname)
+        query = helpers.getQueryForTest(testname)
+        expected = helpers.getParsedResultForTest(testname)
+        result = parseSql.MySqlParser().parseQuery(query)
+        assert result == expected
+        
 
-    def test_simple_update_table(self):
+    @pytest.mark.skip(reason="no way of currently testing this")
+    def test_simple_update_table(self, helpers):
         testname = "simpleUpdateTable"
-        testSqlfile(self, testname)
-
-
-if __name__ == '__main__':
-    unittest.main()
+        query = helpers.getQueryForTest(testname)
+        expected = helpers.getParsedResultForTest(testname)
+        result = parseSql.MySqlParser().parseQuery(query)
+        assert result == expected    
