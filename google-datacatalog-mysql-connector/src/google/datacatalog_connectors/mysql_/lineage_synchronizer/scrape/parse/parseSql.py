@@ -1,5 +1,3 @@
-import subprocess
-import os
 import json
 from types import SimpleNamespace
 from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape.parse import lineage
@@ -26,3 +24,10 @@ class MySqlParser():
         query = str(query)
         jsdata = json.loads(query, object_hook=lambda d: SimpleNamespace(**d))
         return lineage.extractLineage(jsdata[0])
+
+if __name__ == "__main__":
+    from sys import argv 
+    print(argv[-1])
+    x = MySqlParser().parseQuery(argv[-1])
+    
+    print(x)

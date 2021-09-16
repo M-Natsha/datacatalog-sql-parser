@@ -49,4 +49,3 @@ class TestTableLineage():
         result = tableLineageExtractor().extract(query)
         print(result)
         assert result == expected
-        

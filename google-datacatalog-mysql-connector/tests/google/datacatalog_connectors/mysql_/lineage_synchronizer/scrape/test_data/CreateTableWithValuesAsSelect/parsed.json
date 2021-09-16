@@ -1,55 +1,23 @@
 {
    "target":{
-      "tables":{
-         "operation":"JOIN",
-         "input":[
-            [
-               "users"
-            ],
-            [
-               "cars"
-            ]
-         ]
-      },
+      "tables":"tasks",
       "columns":[
-         "*"
+         "task_id",
+         "title",
+         "start_date",
+         "due_date",
+         "status",
+         "priority",
+         "description",
+         "created_at"
       ]
    },
    "source":{
-      "tables":{
-         "operation":"JOIN",
-         "input":[
-            [
-               "users"
-            ],
-            [
-               "cars"
-            ]
-         ]
-      },
+      "tables":[
+         "T1"
+      ],
       "columns":[
-         [
-            "users",
-            "*"
-         ],
-         {
-            "operation":"AS",
-            "input":[
-               "cars",
-               "id"
-            ],
-            "output":[
-               "car_id"
-            ]
-         },
-         [
-            "cars",
-            "vendor"
-         ],
-         [
-            "cars",
-            "model"
-         ]
+         "*"
       ]
    }
 }

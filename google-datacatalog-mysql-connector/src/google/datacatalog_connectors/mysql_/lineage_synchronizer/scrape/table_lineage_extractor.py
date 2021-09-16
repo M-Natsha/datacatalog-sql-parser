@@ -9,7 +9,8 @@ noLineageQueryPatterns = [
     re.compile("\\s*DESC\\s+(.*)", re.IGNORECASE),
     re.compile("\\s*DESCRIBE\\s+(.*)", re.IGNORECASE),
     re.compile("\\s*DESCRIBE\\s+(.*)", re.IGNORECASE),
-    re.compile("\\s*use\\s+(.*)", re.IGNORECASE)
+    re.compile("\\s*use\\s+(.*)", re.IGNORECASE),
+    re.compile("\s*CREATE\s+TABLE((?s).*)\s+ENGINE\s+=\s+[A-Za-z1-9]+;", re.IGNORECASE)
 ]
 
 
