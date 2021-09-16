@@ -4,6 +4,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TransformUpdateToEquivalent implements ITranformToEquivalent {
+    public static void main(String[] args) throws Exception {
+        System.out.println("started");
+//        String query = args[0];
+        String query = "UPDATE t1, (SELECT * FROM t2) as t3 SET t1,";
+        ITranformToEquivalent transformer = new TransformUpdateToEquivalent();
+        String result = transformer.transform(query);
+
+        System.out.println("result: " + result);
+    }
+
     @Override
     public Boolean canTransform(String query) {
         String updateRegex = "update((?s).*)\\,((?s).*)SET((?s).*)";
@@ -19,9 +29,19 @@ public class TransformUpdateToEquivalent implements ITranformToEquivalent {
         Matcher matcher = pattern.matcher(query);
         matcher.find();
 
-        String query1 = "SELECT * FROM " + matcher.group(1);
-        String query2 = "UPDATE dummy_target SET " +  matcher.group(2);
+        String colListString = matcher.group(1);
+        String[] colList = colListString.split(",");
 
-        return query1 + ";" + query2;
+        String equivalentQuery = "";
+        for (String col : colList) {
+            if (col.trim().equalsIgnoreCase("")) {
+                continue;
+            }
+
+            equivalentQuery += "SELECT * FROM " + col + ";";
+
+        }
+
+        return equivalentQuery;
     }
 }
