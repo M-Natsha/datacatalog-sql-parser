@@ -2,7 +2,7 @@ package com;
 
 import java.util.Scanner;
 
-public class LiveParsingCommand extends Command{
+public class LiveParsingCommand extends Command {
     @Override
     public void Run(String... args) throws Exception {
         Scanner in = new Scanner(System.in);
@@ -15,7 +15,7 @@ public class LiveParsingCommand extends Command{
             data = in.next();
 
             // TODO: change this to a better command
-            if(data.equalsIgnoreCase("exit")) {
+            if (data.equalsIgnoreCase("exit")) {
                 in.close();
                 break;
             }
@@ -23,6 +23,6 @@ public class LiveParsingCommand extends Command{
             String json = ParseSql.parseSqlToJson(data);
             System.out.println(json);
 
-        } while(true);
+        } while (true);
     }
 }
