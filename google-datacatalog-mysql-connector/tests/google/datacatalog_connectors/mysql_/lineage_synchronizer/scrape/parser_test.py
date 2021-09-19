@@ -75,3 +75,78 @@ class TestSqlParser():
         assert result == expected    
         
         
+    def  test_delete_and_select(self, helpers):
+        testname = "DeleteAndSelect"
+        query = helpers.getQueryForTest(testname)
+        expected = helpers.getParsedResultForTest(testname)
+        result = parseSql.MySqlParser().parseQuery(query)
+        print(result)
+        assert result == expected
+        
+    def test_delete_and_select2(self, helpers):
+        testname = "DeleteAndSelect2"
+        query = helpers.getQueryForTest(testname)
+        expected = helpers.getParsedResultForTest(testname)
+        result = parseSql.MySqlParser().parseQuery(query)
+        print(result)
+        assert result == expected
+        
+    def test_delete_from_join(self, helpers):
+        testname = "DeleteFromJoin"
+        query = helpers.getQueryForTest(testname)
+        expected = helpers.getParsedResultForTest(testname)
+        result = parseSql.MySqlParser().parseQuery(query)
+        print(result)
+        assert result == expected
+        
+    def test_delete_from_multiple_table(self, helpers):
+        testname = "DeleteFromMultipleTable"
+        query = helpers.getQueryForTest(testname)
+        expected = helpers.getParsedResultForTest(testname)
+        result = parseSql.MySqlParser().parseQuery(query)
+        print(result)
+        assert result == expected
+        
+    def test_delete_from_table(self, helpers):
+        testname = "DeleteFromTable"
+        query = helpers.getQueryForTest(testname)
+        expected = helpers.getParsedResultForTest(testname)
+        result = parseSql.MySqlParser().parseQuery(query)
+        print(result)
+        assert result == expected
+        
+    def test_update(self, helpers):
+        testname = "update"
+        query = helpers.getQueryForTest(testname)
+        expected = helpers.getParsedResultForTest(testname)
+        result = parseSql.MySqlParser().parseQuery(query)
+        print(result)
+        assert result == expected
+        
+    def test_update2(self, helpers):
+        testname = "update2"
+        query = helpers.getQueryForTest(testname)
+        expected = helpers.getParsedResultForTest(testname)
+        result = parseSql.MySqlParser().parseQuery(query)
+        print(result)
+        assert result == expected
+        
+    def test_update_multiple_tables(self, helpers):
+        testname = "updateMultipleTables"
+        query = helpers.getQueryForTest(testname)
+        expected = helpers.getParsedResultForTest(testname)
+        result = parseSql.MySqlParser().parseQuery(query)
+        print(result)
+        assert result == expected
+        
+    def test_update_set_select(self, helpers):
+        testname = "updateSetSelect"
+        query = helpers.getQueryForTest(testname)
+        expected = helpers.getParsedResultForTest(testname)
+        result = parseSql.MySqlParser().parseQuery(query)
+        print(result)
+        assert result == expected
+        
+    
+        
+        

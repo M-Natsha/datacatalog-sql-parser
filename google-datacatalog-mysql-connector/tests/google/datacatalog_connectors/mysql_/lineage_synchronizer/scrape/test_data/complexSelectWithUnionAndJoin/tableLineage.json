@@ -1,1 +1,4 @@
-["osm", "t2"]
+{
+    "target": [],
+    "source":["osm", "t2"]
+ }

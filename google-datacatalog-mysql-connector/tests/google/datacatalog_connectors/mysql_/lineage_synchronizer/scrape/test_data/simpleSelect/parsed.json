@@ -1,31 +1,34 @@
 {
-   "tables":[
-      "T1"
+   "target":[
+      
    ],
-   "columns":[
-      "*",
-      "A",
+   "source":[
       {
-         "operation":"AS",
-         "input":"A",
-         "output":"B"
-      },
-      {
-         "operation":"AS",
-         "input":"B.X",
-         "output":"A"
-      },
-      "B.X",
-      "B.X.Y",
-      {
-         "operation":"FUNCTION",
-         "input":[
+         "tables":"T1",
+         "columns":[
+            "*",
             "A",
-            [
-               "hi"
-            ]
-         ],
-         "output":"||"
+            {
+               "operation":"AS",
+               "input":"A",
+               "output":"B"
+            },
+            {
+               "operation":"AS",
+               "input":"B.X",
+               "output":"A"
+            },
+            "B.X",
+            "B.X.Y",
+            {
+               "operation":"FUNCTION",
+               "input":[
+                  "A",
+                  "hi"
+               ],
+               "output":"||"
+            }
+         ]
       }
    ]
 }

@@ -1,15 +1,22 @@
 from functools import reduce
 
+def AppendOrExtend(myList, item):
+    if isinstance(item,list):
+        myList.extend(item)
+    else:
+        myList.append(item)
+
+    return myList
 
 def handleJoin(node):
     par = {"operation": "JOIN", "input": []}
 
     if hasattr(node, 'left'):
-        par['input'] += [handleSource(node.left)]
+        AppendOrExtend(par['input'], handleSource(node.left))
 
     if hasattr(node, 'right'):
-        par['input'] += [handleSource(node.right)]
-
+        AppendOrExtend(par['input'], handleSource(node.right))
+        
     return par
 
 
@@ -18,7 +25,7 @@ def handleFrom(node):
 
     source = {
         "tables": handleSource(frm),
-        "columns": reduce(lambda x, y: x + [getColumnInfo(y)], node.selectList,
+        "columns": reduce(lambda x, y: AppendOrExtend(x, getColumnInfo(y)), node.selectList,
                           [])
     }
 
@@ -31,7 +38,7 @@ def handleSource(node):
 
     # return names
     if hasattr(node, 'names'):
-        return node.names
+        return getColumnInfo(node) 
 
     # handle from
     if hasattr(node, 'from'):
@@ -54,7 +61,7 @@ def HandleUnion(node):
     par = {"operation": "UNION", "input": []}
 
     for query in node.operands:
-        par["input"] += [handleSource(query)]
+        AppendOrExtend(par["input"], handleSource(query))
     return par
 
 
@@ -74,7 +81,7 @@ def getColumnInfo(node):
     if isinstance(node, list):
         colInfo = []
         for col in node:
-            colInfo += getColumnInfo(col)
+            AppendOrExtend(colInfo, getColumnInfo(col))
 
         return colInfo
 
@@ -110,7 +117,7 @@ def handleAs(node):
 def handleFunc(node):
     body = {
         'operation': 'FUNCTION',
-        'input': reduce(lambda x, y: x + [getColumnInfo(y)], node.operands,
+        'input': reduce(lambda x, y: AppendOrExtend(x, getColumnInfo(y)) , node.operands,
                         []),
         'output': node.operator.name
     }

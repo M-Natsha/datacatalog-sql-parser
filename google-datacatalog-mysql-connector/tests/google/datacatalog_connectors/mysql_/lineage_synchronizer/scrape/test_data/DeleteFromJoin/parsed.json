@@ -2,7 +2,7 @@
    "target":[
       {
          "tables":[
-            "random_table"
+            "tableA"
          ],
          "columns":[
             "*"
@@ -14,19 +14,16 @@
          "tables":{
             "operation":"JOIN",
             "input":[
-               "users",
-               "cars"
+               "tableA",
+               {
+                  "operation":"AS",
+                  "input":"tableB",
+                  "output":"u"
+               }
             ]
          },
          "columns":[
-            "users.*",
-            {
-               "operation":"AS",
-               "input":"cars.id",
-               "output":"car_id"
-            },
-            "cars.vendor",
-            "cars.model"
+            "*"
          ]
       }
    ]

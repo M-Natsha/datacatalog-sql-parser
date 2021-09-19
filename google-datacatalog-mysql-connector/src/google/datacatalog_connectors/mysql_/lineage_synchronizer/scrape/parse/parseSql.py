@@ -23,7 +23,7 @@ class MySqlParser():
         query = javaParser.parseQuery(query)
         query = str(query)
         jsdata = json.loads(query, object_hook=lambda d: SimpleNamespace(**d))
-        return lineage.extractLineage(jsdata[0])
+        return lineage.extractLineageFromList(jsdata)
 
 if __name__ == "__main__":
     from sys import argv 

@@ -22,7 +22,6 @@ public class ParseSql {
     public static void main(String[] args) throws Exception {
         System.out.println("started");
         String query = args[0];
-
         String result = parseSqlToJson(query);
 
         System.out.println("result: " + result);
@@ -74,6 +73,7 @@ public class ParseSql {
         TransformCreateToEquivalent createEqu = new TransformCreateToEquivalent();
 
         if (deleteTransform.canTransform(query)) {
+            System.out.println("delete handler");
             query = deleteTransform.transform(query);
         } else if (updateTransform.canTransform(query)) {
             query = updateTransform.transform(query);

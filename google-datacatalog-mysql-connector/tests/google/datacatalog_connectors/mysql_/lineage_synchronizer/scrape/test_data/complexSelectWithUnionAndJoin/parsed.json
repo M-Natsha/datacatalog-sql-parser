@@ -1,34 +1,35 @@
 {
-   "tables":{
-      "operation":"UNION",
-      "input":[
-         {
-            "tables":[
-               "osm"
-            ],
-            "columns":[
-               "*"
+   "target":[
+      
+   ],
+   "source":[
+      {
+         "tables":{
+            "operation":"UNION",
+            "input":[
+               {
+                  "tables":"osm",
+                  "columns":[
+                     "*"
+                  ]
+               },
+               {
+                  "tables":{
+                     "operation":"JOIN",
+                     "input":[
+                        "osm",
+                        "t2"
+                     ]
+                  },
+                  "columns":[
+                     "*"
+                  ]
+               }
             ]
          },
-         {
-            "tables":{
-               "operation":"JOIN",
-               "input":[
-                  [
-                     "osm"
-                  ],
-                  [
-                     "t2"
-                  ]
-               ]
-            },
-            "columns":[
-               "*"
-            ]
-         }
-      ]
-   },
-   "columns":[
-      "*"
+         "columns":[
+            "*"
+         ]
+      }
    ]
 }

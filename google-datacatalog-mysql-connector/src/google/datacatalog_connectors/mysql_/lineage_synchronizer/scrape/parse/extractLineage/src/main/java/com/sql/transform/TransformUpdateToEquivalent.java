@@ -1,13 +1,13 @@
 package com.sql.transform;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TransformUpdateToEquivalent implements ITranformToEquivalent {
     public static void main(String[] args) throws Exception {
         System.out.println("started");
-//        String query = args[0];
-        String query = "UPDATE t1, (SELECT * FROM t2) as t3 SET t1,";
+        String query = args[0];
         ITranformToEquivalent transformer = new TransformUpdateToEquivalent();
         String result = transformer.transform(query);
 
@@ -21,8 +21,15 @@ public class TransformUpdateToEquivalent implements ITranformToEquivalent {
         return pattern.matcher(query).matches();
     }
 
-    @Override
-    public String transform(String query) {
+    private Boolean isSelectASQuery(String query) {
+        query = query.trim();
+
+        String updateRegex = "\\(\\s*SELECT\\s+(?s).*as\\s+[a-z0-9_]*";
+        final Pattern pattern = Pattern.compile(updateRegex, Pattern.CASE_INSENSITIVE);
+        return pattern.matcher(query).matches();
+    }
+
+    private String[] getColList(String query) {
         String updateRegex = "update((?s).*)SET((?s).*)";
         final Pattern pattern = Pattern.compile(updateRegex, Pattern.CASE_INSENSITIVE);
         // find Matching patterns
@@ -30,16 +37,27 @@ public class TransformUpdateToEquivalent implements ITranformToEquivalent {
         matcher.find();
 
         String colListString = matcher.group(1);
-        String[] colList = colListString.split(",");
+        return colListString.split(",");
+    }
+
+
+    private  String[] getTargets(String[] colList) {
+        return Arrays.stream(colList).filter(x -> !isSelectASQuery(x)).toArray(String[]::new);
+    }
+
+    @Override
+    public String transform(String query) {
+        String[] sources = getColList(query);
+        String[] targets = getTargets(sources);
+        String combinedSources = String.join(" JOIN ", sources);
 
         String equivalentQuery = "";
-        for (String col : colList) {
-            if (col.trim().equalsIgnoreCase("")) {
+        for (String target : targets) {
+            if (target.trim().equalsIgnoreCase("")) {
                 continue;
             }
 
-            equivalentQuery += "SELECT * FROM " + col + ";";
-
+            equivalentQuery += "INSERT INTO " + target +" SELECT * FROM " + combinedSources + ";";
         }
 
         return equivalentQuery;

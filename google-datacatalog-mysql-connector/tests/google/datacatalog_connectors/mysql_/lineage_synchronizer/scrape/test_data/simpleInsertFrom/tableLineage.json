@@ -1,5 +1,5 @@
 {
-   "target":"t1",
+   "target":["t1"],
    "source":[
       "t2",
       "t3",

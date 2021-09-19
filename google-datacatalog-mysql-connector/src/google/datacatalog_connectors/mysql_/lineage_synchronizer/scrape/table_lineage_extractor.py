@@ -25,24 +25,6 @@ class tableLineageExtractor:
 
         # else it has lineage info
         return True
-
-    def combineLineageEvents(*lineageEvents: dict):
-        combinedEvents = {
-            'targets' : [],
-            'sources': []
-        }
-        
-        for event in lineageEvents:
-            if 'targets' in event:
-                combinedEvents['targets'] += event['targets']
-            
-            if 'sources' in event:
-                combinedEvents['sources'] += event['sources']
-            
-        combinedEvents['targets'] = list(OrderedDict.fromkeys(combinedEvents['targets']))
-        combinedEvents['sources'] = list(OrderedDict.fromkeys(combinedEvents['sources']))
-        
-        return combinedEvents
     
     def extractLineageFromTreeNode(self, node):
         if isinstance(node, str):
