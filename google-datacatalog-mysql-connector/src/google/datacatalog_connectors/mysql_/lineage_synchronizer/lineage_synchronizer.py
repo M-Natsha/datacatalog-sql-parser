@@ -15,13 +15,16 @@
 # limitations under the License.
 
 import logging
+from google.datacatalog_connectors.mysql_.lineage_synchronizer.ingest import IngestLineage
 
 from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape import table_lineage_scraper
 
 
 class lineageSynchronizer:
-    def __init__(self, connection_args):
+    def __init__(self, connection_args, project_id,location_id):
         self.connection_args = connection_args
+        self.project_id = project_id
+        self.location_id = location_id
 
     def run(self):
         logging.info('\n\n==============Scrape metadata===============')
@@ -35,8 +38,12 @@ class lineageSynchronizer:
         datacatalog_lineage_data = datacatalog_prepare.prepare(lineage_data)
 
         logging.info('\n============End-lineage-datacatalog============')
-        datacatalog_ingestion = self._get_ingest()()
-        res = datacatalog_ingestion.ingest(datacatalog_lineage_data)
+        self._get_ingest()(
+                self.project_id,
+                self.location_id
+            ).ingest(
+                lineage_data
+            )
 
     def _get_scraper(self):
         return table_lineage_scraper.tableLineageScraper
@@ -46,5 +53,4 @@ class lineageSynchronizer:
             'Implementing this method is required to connect to a RDBMS!')
 
     def _get_ingest(self):
-        raise NotImplementedError(
-            'Implementing this method is required to connect to a RDBMS!')
+        return IngestLineage

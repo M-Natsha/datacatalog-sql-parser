@@ -14,7 +14,7 @@ class tableLineageScraper():
 
         # read logs
         reader = self._get_log_reader()(connection)
-        logs = reader.readLogs()
+        logs = reader.read_logs()
 
         # extract lineage
         lineageList = []
@@ -23,7 +23,7 @@ class tableLineageScraper():
         for log in logs:
             if log['command_type'] == 'Query':
                 query = log['argument'].decode('ascii')
-                if lineage_extractor.queryHasLineage(query):
+                if lineage_extractor.query_has_lineage(query):
                     try:
                         lineage = lineage_extractor.extract(query)
                         print(lineage)

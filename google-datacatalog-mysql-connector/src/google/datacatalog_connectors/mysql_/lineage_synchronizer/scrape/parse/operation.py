@@ -33,6 +33,7 @@ def handleFrom(node):
 
 
 def handleSource(node):
+    
     if hasattr(node, 'source'):
         return handleSource(node.source)
 
@@ -124,7 +125,7 @@ def handleFunc(node):
     return body
 
 
-def handleCreateTable(node):
+def handle_create_table(node):
     return handleSource(node.query)
 
 
@@ -133,7 +134,7 @@ operatorFuncMap = {
     'OTHER_FUNCTION': handleFunc,
     "OTHER": handleFunc,
     "UNION": HandleUnion,
-    "CREATE_TABLE": handleCreateTable
+    "CREATE_TABLE": handle_create_table
 }
 
 

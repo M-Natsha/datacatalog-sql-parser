@@ -7,21 +7,21 @@ class TestSqlParser():
         testname = "simpleSelect"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
-        result = parseSql.MySqlParser().parseQuery(query)
+        result = parseSql.MySqlParser().parse_query(query)
         assert result == expected
 
     def test_complex_select_with_join(self, helpers):
         testname = "complexSelectWithJoin"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
-        result = parseSql.MySqlParser().parseQuery(query)
+        result = parseSql.MySqlParser().parse_query(query)
         assert result == expected
 
     def test_complex_select_with_union_and_join(self, helpers):
         testname = "complexSelectWithUnionAndJoin"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
-        result = parseSql.MySqlParser().parseQuery(query)
+        result = parseSql.MySqlParser().parse_query(query)
         assert result == expected
 
 
@@ -29,7 +29,7 @@ class TestSqlParser():
         testname = "CreateTableAsSelect"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
-        result = parseSql.MySqlParser().parseQuery(query)
+        result = parseSql.MySqlParser().parse_query(query)
         assert result == expected
 
 
@@ -37,14 +37,14 @@ class TestSqlParser():
         testname = "CreateTableWithValuesAsSelect2"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
-        result = parseSql.MySqlParser().parseQuery(query)
+        result = parseSql.MySqlParser().parse_query(query)
         assert result == expected
 
     def test_simple_insert(self, helpers):
         testname = "simpleInsertFrom"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
-        result = parseSql.MySqlParser().parseQuery(query)
+        result = parseSql.MySqlParser().parse_query(query)
         assert result == expected
         
         
@@ -52,7 +52,7 @@ class TestSqlParser():
         testname = "CreateTableWithValuesAsSelect"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
-        result = parseSql.MySqlParser().parseQuery(query)
+        result = parseSql.MySqlParser().parse_query(query)
         print(result)
         assert result == expected
         
@@ -62,7 +62,7 @@ class TestSqlParser():
         testname = "simpleInsertValues"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
-        result = parseSql.MySqlParser().parseQuery(query)
+        result = parseSql.MySqlParser().parse_query(query)
         assert result == expected
         
 
@@ -71,7 +71,7 @@ class TestSqlParser():
         testname = "simpleUpdateTable"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
-        result = parseSql.MySqlParser().parseQuery(query)
+        result = parseSql.MySqlParser().parse_query(query)
         assert result == expected    
         
         
@@ -79,7 +79,7 @@ class TestSqlParser():
         testname = "DeleteAndSelect"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
-        result = parseSql.MySqlParser().parseQuery(query)
+        result = parseSql.MySqlParser().parse_query(query)
         print(result)
         assert result == expected
         
@@ -87,7 +87,7 @@ class TestSqlParser():
         testname = "DeleteAndSelect2"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
-        result = parseSql.MySqlParser().parseQuery(query)
+        result = parseSql.MySqlParser().parse_query(query)
         print(result)
         assert result == expected
         
@@ -95,7 +95,7 @@ class TestSqlParser():
         testname = "DeleteFromJoin"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
-        result = parseSql.MySqlParser().parseQuery(query)
+        result = parseSql.MySqlParser().parse_query(query)
         print(result)
         assert result == expected
         
@@ -103,7 +103,7 @@ class TestSqlParser():
         testname = "DeleteFromMultipleTable"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
-        result = parseSql.MySqlParser().parseQuery(query)
+        result = parseSql.MySqlParser().parse_query(query)
         print(result)
         assert result == expected
         
@@ -111,7 +111,7 @@ class TestSqlParser():
         testname = "DeleteFromTable"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
-        result = parseSql.MySqlParser().parseQuery(query)
+        result = parseSql.MySqlParser().parse_query(query)
         print(result)
         assert result == expected
         
@@ -119,7 +119,7 @@ class TestSqlParser():
         testname = "update"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
-        result = parseSql.MySqlParser().parseQuery(query)
+        result = parseSql.MySqlParser().parse_query(query)
         print(result)
         assert result == expected
         
@@ -127,7 +127,7 @@ class TestSqlParser():
         testname = "update2"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
-        result = parseSql.MySqlParser().parseQuery(query)
+        result = parseSql.MySqlParser().parse_query(query)
         print(result)
         assert result == expected
         
@@ -135,7 +135,7 @@ class TestSqlParser():
         testname = "updateMultipleTables"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
-        result = parseSql.MySqlParser().parseQuery(query)
+        result = parseSql.MySqlParser().parse_query(query)
         print(result)
         assert result == expected
         
@@ -143,7 +143,7 @@ class TestSqlParser():
         testname = "updateSetSelect"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
-        result = parseSql.MySqlParser().parseQuery(query)
+        result = parseSql.MySqlParser().parse_query(query)
         print(result)
         assert result == expected
         

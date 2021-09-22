@@ -21,7 +21,25 @@ public class ParseSql {
 
     public static void main(String[] args) throws Exception {
         System.out.println("started");
-        String query = args[0];
+        String query = "UPDATE\n" +
+                "  t1,\n" +
+                "  t5,\n" +
+                "  (\n" +
+                "    SELECT\n" +
+                "      *\n" +
+                "    FROM\n" +
+                "      t2\n" +
+                "  ) as tx,\n" +
+                "  (\n" +
+                "    SELECT\n" +
+                "      *\n" +
+                "    FROM\n" +
+                "      t2\n" +
+                "      LEFT JOIN t3 ON x = y\n" +
+                "  ) as t3\n" +
+                "SET\n" +
+                "  t1 = 5\n";
+
         String result = parseSqlToJson(query);
 
         System.out.println("result: " + result);
@@ -73,7 +91,6 @@ public class ParseSql {
         TransformCreateToEquivalent createEqu = new TransformCreateToEquivalent();
 
         if (deleteTransform.canTransform(query)) {
-            System.out.println("delete handler");
             query = deleteTransform.transform(query);
         } else if (updateTransform.canTransform(query)) {
             query = updateTransform.transform(query);

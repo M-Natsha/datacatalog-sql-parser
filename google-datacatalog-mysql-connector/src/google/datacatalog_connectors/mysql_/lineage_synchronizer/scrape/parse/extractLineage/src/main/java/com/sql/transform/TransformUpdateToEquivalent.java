@@ -14,9 +14,16 @@ public class TransformUpdateToEquivalent implements ITranformToEquivalent {
         System.out.println("result: " + result);
     }
 
+    public static String filterSetVarWithDot(String query) {
+        String varRegex = "[A-Za-z0-9_]+\\.[A-Za-z0-9_]+\\s*=";
+        query = query.replaceAll(varRegex,"x=");
+
+        return query;
+    }
+
     @Override
     public Boolean canTransform(String query) {
-        String updateRegex = "update((?s).*)\\,((?s).*)SET((?s).*)";
+        String updateRegex = "update\\s+((?s).*)SET((?s).*)";
         final Pattern pattern = Pattern.compile(updateRegex, Pattern.CASE_INSENSITIVE);
         return pattern.matcher(query).matches();
     }
@@ -30,7 +37,7 @@ public class TransformUpdateToEquivalent implements ITranformToEquivalent {
     }
 
     private String[] getColList(String query) {
-        String updateRegex = "update((?s).*)SET((?s).*)";
+        String updateRegex = "update\\s+((?s).*)SET((?s).*)";
         final Pattern pattern = Pattern.compile(updateRegex, Pattern.CASE_INSENSITIVE);
         // find Matching patterns
         Matcher matcher = pattern.matcher(query);
@@ -40,6 +47,17 @@ public class TransformUpdateToEquivalent implements ITranformToEquivalent {
         return colListString.split(",");
     }
 
+    private String getSetQuery(String query) {
+        String updateRegex = "update\\s+((?s).*)SET((?s).*)";
+        final Pattern pattern = Pattern.compile(updateRegex, Pattern.CASE_INSENSITIVE);
+        // find Matching patterns
+        Matcher matcher = pattern.matcher(query);
+        matcher.find();
+
+        return matcher.group(2);
+    }
+
+
 
     private  String[] getTargets(String[] colList) {
         return Arrays.stream(colList).filter(x -> !isSelectASQuery(x)).toArray(String[]::new);
@@ -47,9 +65,14 @@ public class TransformUpdateToEquivalent implements ITranformToEquivalent {
 
     @Override
     public String transform(String query) {
+        // Filtering and removing unparsable information
+        query = filterSetVarWithDot(query);
+
         String[] sources = getColList(query);
         String[] targets = getTargets(sources);
+
         String combinedSources = String.join(" JOIN ", sources);
+        String setClosure = getSetQuery(query);
 
         String equivalentQuery = "";
         for (String target : targets) {
@@ -58,6 +81,7 @@ public class TransformUpdateToEquivalent implements ITranformToEquivalent {
             }
 
             equivalentQuery += "INSERT INTO " + target +" SELECT * FROM " + combinedSources + ";";
+            equivalentQuery += "UPDATE  " + target + " SET " + setClosure + ";";
         }
 
         return equivalentQuery;

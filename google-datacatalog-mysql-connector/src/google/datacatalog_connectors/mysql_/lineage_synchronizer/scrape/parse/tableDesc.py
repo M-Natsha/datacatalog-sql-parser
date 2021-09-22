@@ -17,7 +17,7 @@ class TableSchema:
         # else read the cache of that table
         pass
 
-    def addInfo(self, info, cursorstamp):
+    def add_info(self, info, cursorstamp):
         # add info at a specific cursor stamp
         self.logs += [info]
 
@@ -32,7 +32,7 @@ class TableSchema:
             # TODO sort self.schemya
         pass
 
-    def getSchema(self, cursorstamp):
+    def get_schema(self, cursorstamp):
         # returns a specific schema at a specific time
         schema = {}
 

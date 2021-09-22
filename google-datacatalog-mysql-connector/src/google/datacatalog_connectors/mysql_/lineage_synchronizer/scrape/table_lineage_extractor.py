@@ -16,7 +16,7 @@ noLineageQueryPatterns = [
 
 
 class tableLineageExtractor:
-    def queryHasLineage(self, query):
+    def query_has_lineage(self, query):
         global noLineageQueryPatterns
 
         for pattern in noLineageQueryPatterns:
@@ -26,14 +26,14 @@ class tableLineageExtractor:
         # else it has lineage info
         return True
     
-    def extractLineageFromTreeNode(self, node):
+    def extract_from_node(self, node):
         if isinstance(node, str):
             return node
 
         if isinstance(node, list):
             tableArray = []
             for source in node:
-                source = self.extractLineageFromTreeNode(source)
+                source = self.extract_from_node(source)
                 if isinstance(source, list):
                     tableArray += source
                 else:
@@ -43,19 +43,19 @@ class tableLineageExtractor:
 
         if 'target' in node and 'source' in node:
             return {
-                'target': self.extractLineageFromTreeNode(node['target']),
-                'source': self.extractLineageFromTreeNode(node['source'])
+                'target': self.extract_from_node(node['target']),
+                'source': self.extract_from_node(node['source'])
             }
 
         # TODO: unite table format
         if 'tables' in node:
-            return self.extractLineageFromTreeNode(node['tables'])
+            return self.extract_from_node(node['tables'])
 
         if 'table' in node:
-            return self.extractLineageFromTreeNode(node['table'])
+            return self.extract_from_node(node['table'])
 
         if 'operation' in node:
-            return self.extractLineageFromTreeNode(node['input'])
+            return self.extract_from_node(node['input'])
 
     def _get_sql_parser(self):
         return parseSql.MySqlParser
@@ -63,9 +63,9 @@ class tableLineageExtractor:
     def extract(self, query):
         # Parse sql query
         parser = self._get_sql_parser()()
-        parseTree = parser.parseQuery(query)
+        parseTree = parser.parse_query(query)
 
         # extract lineage
-        lineage = self.extractLineageFromTreeNode(parseTree)
+        lineage = self.extract_from_node(parseTree)
         # return lineage
         return lineage

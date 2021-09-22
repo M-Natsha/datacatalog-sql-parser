@@ -3,7 +3,7 @@ from functools import reduce
 from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape.parse.operation import getColumnInfo, handleSource
 from iteration_utilities import unique_everseen 
 
-def handleInsert(node):
+def handle_insert(node):
     # extract target data
     target = {"tables": [getColumnInfo(node.targetTable)], "columns": ['*']}
 
@@ -17,17 +17,17 @@ def handleInsert(node):
     return {"source": source, "target": target}
 
 
-def handleSelect(node):
+def handle_select(node):
     return {
         "source": handleSource(node)
     }
 
 
-def handleQuery(node):
-    return extractLineage(node.query)
+def handle_query(node):
+    return extract_lineage(node.query)
 
 
-def handleCreateTable(node):
+def handle_create_table(node):
     res = {
         "target": {
             "tables": [],
@@ -46,28 +46,28 @@ def handleCreateTable(node):
 
     return res
 
-
-def extractLineage(node):
+    
+def extract_lineage(node):
     if hasattr(node, 'operator'):
         if node.operator.kind == "CREATE_TABLE":
-            return handleCreateTable(node)
+            return handle_create_table(node)
 
     if hasattr(node, 'targetTable'):
-        return handleInsert(node)
+        return handle_insert(node)
 
     if hasattr(node, 'selectList'):
-        return handleSelect(node)
+        return handle_select(node)
 
     if hasattr(node, 'query'):
-        return handleQuery(node)
+        return handle_query(node)
 
     return False
 
 
-def removeDuplicates(myList: list):
+def remove_duplicates(myList: list):
     return list(unique_everseen(myList))
 
-def combineLineageEvents(*lineageEvents: dict):
+def combine_lineage_events(*lineageEvents: dict):
     combinedEvents = {
         'target' :[], 
         'source': []
@@ -88,16 +88,16 @@ def combineLineageEvents(*lineageEvents: dict):
             combinedEvents['source'] += source
     
     # ensure that source are unique 
-    combinedEvents['target'] = removeDuplicates(combinedEvents['target'])
-    combinedEvents['source'] = removeDuplicates(combinedEvents['source'])
+    combinedEvents['target'] = remove_duplicates(combinedEvents['target'])
+    combinedEvents['source'] = remove_duplicates(combinedEvents['source'])
     
     return combinedEvents
 
-def extractLineageFromList(nodelist):
+def extract_lineage_from_list(nodelist):
     lineageTreeList = []
 
     for nodeTree in nodelist:
-        lineageTreeList.append(extractLineage(nodeTree))
+        lineageTreeList.append(extract_lineage(nodeTree))
         
-    return combineLineageEvents(*lineageTreeList)
+    return combine_lineage_events(*lineageTreeList)
          
