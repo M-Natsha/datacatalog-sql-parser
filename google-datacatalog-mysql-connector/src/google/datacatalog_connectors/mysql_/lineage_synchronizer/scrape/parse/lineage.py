@@ -1,25 +1,25 @@
 from collections import OrderedDict
 from functools import reduce
-from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape.parse.operation import getColumnInfo, handleSource
+from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape.parse.operation import AppendOrExtend, Scope, getColumnInfo, handleSource
 from iteration_utilities import unique_everseen 
 
 def handle_insert(node):
     # extract target data
-    target = {"tables": [getColumnInfo(node.targetTable)], "columns": ['*']}
+    target = {"tables": [getColumnInfo(node.targetTable, Scope.TABLE)], "columns": ['*']}
 
-    if node.columnList is not None:
-        target['columns'] = reduce(lambda x, y: x + getColumnInfo(y),
+    if hasattr (node,'columnList') and node.columnList is not None:
+        target['columns'] = reduce(lambda x, y: AppendOrExtend(x, getColumnInfo(y, Scope.TABLE)),
                                    node.columnList, [])
 
     # exctract source data
-    source = handleSource(node)
+    source = handleSource(node, Scope.TABLE)
 
     return {"source": source, "target": target}
 
 
 def handle_select(node):
     return {
-        "source": handleSource(node)
+        "source": handleSource(node, Scope.TABLE)
     }
 
 
@@ -33,13 +33,13 @@ def handle_create_table(node):
             "tables": [],
             "columns": []
         },
-        "source": handleSource(node.query)
+        "source": handleSource(node, Scope.TABLE)
     }
 
-    res['target']['tables'] = [getColumnInfo(node.name)]
+    res['target']['tables'] = [getColumnInfo(node.name, Scope.TABLE)]
 
     if hasattr(node, 'columnList') and node.columnList is not None:
-        res['target']['columns'] = reduce(lambda x, y: x + [getColumnInfo(y)],
+        res['target']['columns'] = reduce(lambda x, y: x + [getColumnInfo(y, Scope.TABLE)],
                                           node.columnList, [])
     else:
         res['target']['columns'] = ['*']

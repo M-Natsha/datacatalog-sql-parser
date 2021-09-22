@@ -74,6 +74,22 @@ class TestSqlParser():
         result = parseSql.MySqlParser().parse_query(query)
         assert result == expected    
         
+    def test_select_where_select(self, helpers):
+        testname = "selectWhereSelect"
+        query = helpers.getQueryForTest(testname)
+        expected = helpers.getParsedResultForTest(testname)
+        result = parseSql.MySqlParser().parse_query(query)
+        print(result)
+        
+        assert result == expected  
+        
+    def test_select_where_compare(self, helpers):
+        testname = "selectWhereCompare"
+        query = helpers.getQueryForTest(testname)
+        expected = helpers.getParsedResultForTest(testname)
+        result = parseSql.MySqlParser().parse_query(query)
+        print(result)
+        assert result == expected  
         
     def  test_delete_and_select(self, helpers):
         testname = "DeleteAndSelect"

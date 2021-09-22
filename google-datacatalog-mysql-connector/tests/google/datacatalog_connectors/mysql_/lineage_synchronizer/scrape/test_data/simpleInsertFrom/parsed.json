@@ -14,7 +14,7 @@
          "operation":"UNION",
          "input":[
             {
-               "tables":{
+               "tables":[{
                   "operation":"JOIN",
                   "input":[
                      {
@@ -26,7 +26,7 @@
                      },
                      "t4"
                   ]
-               },
+               }],
                "columns":[
                   "t3.*",
                   "t4.id",
@@ -35,7 +35,7 @@
                ]
             },
             {
-               "tables":"t3",
+               "tables":["t3"],
                "columns":[
                   "*"
                ]

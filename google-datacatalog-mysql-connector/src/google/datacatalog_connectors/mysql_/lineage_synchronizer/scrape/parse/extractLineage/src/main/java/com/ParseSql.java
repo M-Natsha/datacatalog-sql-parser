@@ -21,24 +21,7 @@ public class ParseSql {
 
     public static void main(String[] args) throws Exception {
         System.out.println("started");
-        String query = "UPDATE\n" +
-                "  t1,\n" +
-                "  t5,\n" +
-                "  (\n" +
-                "    SELECT\n" +
-                "      *\n" +
-                "    FROM\n" +
-                "      t2\n" +
-                "  ) as tx,\n" +
-                "  (\n" +
-                "    SELECT\n" +
-                "      *\n" +
-                "    FROM\n" +
-                "      t2\n" +
-                "      LEFT JOIN t3 ON x = y\n" +
-                "  ) as t3\n" +
-                "SET\n" +
-                "  t1 = 5\n";
+        String query = args[0];
 
         String result = parseSqlToJson(query);
 

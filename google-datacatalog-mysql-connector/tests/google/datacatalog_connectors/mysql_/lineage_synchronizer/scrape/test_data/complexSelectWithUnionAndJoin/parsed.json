@@ -4,29 +4,65 @@
    ],
    "source":[
       {
-         "tables":{
-            "operation":"UNION",
-            "input":[
-               {
-                  "tables":"osm",
-                  "columns":[
-                     "*"
-                  ]
-               },
-               {
-                  "tables":{
-                     "operation":"JOIN",
-                     "input":[
-                        "osm",
-                        "t2"
+         "tables":[
+            {
+               "operation":"UNION",
+               "input":[
+                  {
+                     "tables":[
+                        {
+                           "tables":[
+                              "osm"
+                           ],
+                           "columns":[
+                              "objectid"
+                           ]
+                        },
+                        {
+                           "tables":[
+                              
+                           ],
+                           "columns":[
+                              "tag"
+                           ]
+                        }
+                     ],
+                     "columns":[
+                        "*"
                      ]
                   },
-                  "columns":[
-                     "*"
-                  ]
-               }
-            ]
-         },
+                  {
+                     "tables":[
+                        {
+                           "tables":[
+                              {
+                                 "operation":"JOIN",
+                                 "input":[
+                                    "osm",
+                                    "t2"
+                                 ]
+                              }
+                           ],
+                           "columns":[
+                              "objectid"
+                           ]
+                        },
+                        {
+                           "tables":[
+                              
+                           ],
+                           "columns":[
+                              "tag"
+                           ]
+                        }
+                     ],
+                     "columns":[
+                        "*"
+                     ]
+                  }
+               ]
+            }
+         ],
          "columns":[
             "*"
          ]

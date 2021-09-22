@@ -1,0 +1,23 @@
+{
+   "target":[
+      
+   ],
+   "source":[
+      {
+         "tables":[
+            "T1"
+         ],
+         "columns":[
+            "*"
+         ]
+      },
+      {
+         "tables":[
+            "T1"
+         ],
+         "columns":[
+            "id"
+         ]
+      }
+   ]
+}

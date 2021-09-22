@@ -1,0 +1,37 @@
+{
+   "target":[
+      
+   ],
+   "source":[
+      {
+         "tables":[
+            "T1"
+         ],
+         "columns":[
+            "*"
+         ]
+      },
+      {
+         "tables":[
+            "T1"
+         ],
+         "columns":[
+            "id"
+         ]
+      },
+      {
+         "tables":[
+            "T2"
+         ],
+         "columns":[
+            {
+               "operation":"FUNCTION",
+               "input":[
+                  "*"
+               ],
+               "output":"COUNT"
+            }
+         ]
+      }
+   ]
+}

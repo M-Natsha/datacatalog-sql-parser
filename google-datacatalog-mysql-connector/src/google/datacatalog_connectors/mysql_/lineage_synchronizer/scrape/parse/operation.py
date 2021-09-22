@@ -1,5 +1,10 @@
 from functools import reduce
-
+from enum import Enum
+class Scope(Enum):
+    COLUMN = 1
+    TABLE = 2
+    DATABASE = 3
+    
 def AppendOrExtend(myList, item):
     if isinstance(item,list):
         myList.extend(item)
@@ -11,11 +16,12 @@ def AppendOrExtend(myList, item):
 def handleJoin(node):
     par = {"operation": "JOIN", "input": []}
 
+    scope = Scope.TABLE
     if hasattr(node, 'left'):
-        AppendOrExtend(par['input'], handleSource(node.left))
+        AppendOrExtend(par['input'], handleSource(node.left,scope))
 
     if hasattr(node, 'right'):
-        AppendOrExtend(par['input'], handleSource(node.right))
+        AppendOrExtend(par['input'], handleSource(node.right, scope))
         
     return par
 
@@ -24,57 +30,63 @@ def handleFrom(node):
     frm = getattr(node, 'from')
 
     source = {
-        "tables": handleSource(frm),
-        "columns": reduce(lambda x, y: AppendOrExtend(x, getColumnInfo(y)), node.selectList,
+        "tables": handleSource(frm, Scope.TABLE),
+        "columns": reduce(lambda x, y: AppendOrExtend(x, getColumnInfo(y, Scope.TABLE)), node.selectList,
                           [])
     }
 
     return source
 
 
-def handleSource(node):
+def handleSource(node, scope):
+    if node is None:
+        return []
     
+    sources = []
     if hasattr(node, 'source'):
-        return handleSource(node.source)
+        AppendOrExtend(sources, handleSource(node.source, scope))
 
     # return names
     if hasattr(node, 'names'):
-        return getColumnInfo(node) 
+        AppendOrExtend(sources,  getColumnInfo(node, scope))
 
     # handle from
     if hasattr(node, 'from'):
-        return handleFrom(node)
+        AppendOrExtend(sources,  handleFrom(node))
 
     # handle Union
     if hasattr(node, 'operator'):
-        return handleOperation(node)
+        AppendOrExtend(sources,  handleOperation(node, scope))
 
     if hasattr(node, 'left'):
-        return handleJoin(node)
+        AppendOrExtend(sources,  handleJoin(node))
 
     if hasattr(node, 'query'):
-        return handleSource(node.query)['tables']
+        AppendOrExtend(sources,  handleSource(node.query, scope))
 
-    return []
+    if(hasattr(node, 'where')):
+        AppendOrExtend(sources,  handleSource(node.where, Scope.COLUMN))
+    
+    return sources
 
 
-def HandleUnion(node):
+def HandleUnion(node, scope):
     par = {"operation": "UNION", "input": []}
 
     for query in node.operands:
-        AppendOrExtend(par["input"], handleSource(query))
+        AppendOrExtend(par["input"], handleSource(query, Scope.TABLE))
     return par
 
 
-def defaultOperation(node):
+def defaultOperation(node, scope):
     return {
         'operation': node.operator.kind,
-        'input': getColumnInfo(node.operands[0]),
+        'input': getColumnInfo(node.operands[0], scope),
         'output': node.operator.name
     }
 
 
-def getColumnInfo(node):
+def getColumnInfo(node, scope):
     # check if its an array
     if hasattr(node, 'value'):
         return [node.value.stringValue]
@@ -82,51 +94,74 @@ def getColumnInfo(node):
     if isinstance(node, list):
         colInfo = []
         for col in node:
-            AppendOrExtend(colInfo, getColumnInfo(col))
+            AppendOrExtend(colInfo, getColumnInfo(col, scope))
 
         return colInfo
 
     if hasattr(node, 'operator'):
-        return operatorFuncMap[node.operator.kind](node)
+        return operatorFuncMap[node.operator.kind](node, scope)
 
     if hasattr(node, 'name'):
-        return getColumnInfo(node.name)
+        return getColumnInfo(node.name, scope)
 
-    names = ""
-    for name in node.names:
-        if names != "":
-            names += "."
-            
-        if name == '':
-            names += '*'
+    if hasattr(node, 'names'):
+        if scope == Scope.TABLE:    
+            result = ""
+            for name in node.names:
+                if result != "":
+                    result += "."
+                
+                if name == '':
+                    result += '*'
+                else:                    
+                    result += name
         else:
-            names += name
+            result = {
+                "tables": [],
+                "columns": []
+            }
+            
+            lastName = node.names[-1]
+            result["columns"] = ['*' if lastName == '' else lastName]
+            
+            if len(node.names) > 1:
+                tableName = ""
+                for name in node.names[:-1]:
+                    if tableName != "":
+                        tableName += "."
+                    
+                    tableName += name
+                    
+                if tableName != '':
+                    result['tables'] = [tableName]
+            
+        return result
+    
+    return []
 
-    return names
 
-
-def handleAs(node):
+def handleAs(node, scope):
     body = {
         'operation': 'AS',
-        'input': getColumnInfo(node.operands[0]),
-        'output': getColumnInfo(node.operands[1])
+        'input': getColumnInfo(node.operands[0], scope),
+        'output': getColumnInfo(node.operands[1], scope)
     }
 
     return body
 
 
-def handleFunc(node):
+def handleFunc(node, scope):
     body = {
         'operation': 'FUNCTION',
-        'input': reduce(lambda x, y: AppendOrExtend(x, getColumnInfo(y)) , node.operands,
+        'input': reduce(lambda x, y: AppendOrExtend(x, getColumnInfo(y, scope)) , node.operands,
                         []),
         'output': node.operator.name
     }
     return body
 
 
-def handle_create_table(node):
-    return handleSource(node.query)
+def handle_create_table(node, scope):
+    return handleSource(node.query, scope)
 
 
 operatorFuncMap = {
@@ -138,6 +173,16 @@ operatorFuncMap = {
 }
 
 
-def handleOperation(node):
+def handleOperation(node, scope):
     type = node.operator.kind
-    return operatorFuncMap[type](node)
+    if type in operatorFuncMap:
+        return operatorFuncMap[type](node, scope)
+    
+    if not hasattr(node,'operands'):
+        return []
+    
+    sources = []
+    for operand in node.operands:
+        sources = AppendOrExtend(sources, handleSource(operand,scope))
+        
+    return sources

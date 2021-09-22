@@ -11,13 +11,13 @@
    ],
    "source":[
       {
-         "tables":{
+         "tables":[{
             "operation":"JOIN",
             "input":[
                "users",
                "cars"
             ]
-         },
+         }],
          "columns":[
             "users.*",
             {
