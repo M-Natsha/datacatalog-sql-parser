@@ -1,9 +1,11 @@
 import logging
 from google.datacatalog_connectors.mysql_.scrape import metadata_scraper
-from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape import logs_reader, table_lineage_extractor
+from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape \
+    import logs_reader, table_lineage_extractor
 
 
 class tableLineageScraper():
+
     def __init__(self, connection_args):
         self.connection_args = connection_args
 
@@ -31,7 +33,7 @@ class tableLineageScraper():
                     except Exception as e:
                         logging.error("Parse error: Couldn't parse " + query)
                         print(e)
-                        
+
                 else:
                     logging.info("Query has no lineage (Skipped): " + query)
 

@@ -7,9 +7,7 @@ import java.util.regex.Pattern;
 public class TransformUpdateToEquivalent implements ITranformToEquivalent {
     public static void main(String[] args) throws Exception {
         System.out.println("started");
-        String query = "UPDATE messages , usersmessages \n" +
-                "  SET _ = (SELECT *  FROM messages  INNER JOIN usersmessages  \n" +
-                "WHERE messages.messageid= usersmessages.messageid and messages.messageid = '1')";
+        String query = args[0];
         ITranformToEquivalent transformer = new TransformUpdateToEquivalent();
         if(transformer.canTransform(query)) {
             System.out.println("can transform");
@@ -24,7 +22,6 @@ public class TransformUpdateToEquivalent implements ITranformToEquivalent {
         int setPos = Commons.findSqlKeyword(query,"SET");
         int wherePos = Commons.findSqlKeyword(query, "WHERE");
 
-        System.out.println((wherePos));
         if(setPos != -1) {
             if(wherePos != -1) {
                 setBody = query.substring(setPos + 5, wherePos);

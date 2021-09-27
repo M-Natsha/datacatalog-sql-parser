@@ -15,35 +15,28 @@
 # limitations under the License.
 
 import logging
-from google.datacatalog_connectors.mysql_.lineage_synchronizer.ingest import IngestLineage
+from google.datacatalog_connectors.mysql_.lineage_synchronizer.ingest \
+    import IngestLineage
 
-from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape import table_lineage_scraper
+from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape \
+    import table_lineage_scraper
 
 
 class lineageSynchronizer:
-    def __init__(self, connection_args, project_id,location_id):
+
+    def __init__(self, connection_args, project_id, location_id):
         self.connection_args = connection_args
         self.project_id = project_id
         self.location_id = location_id
 
     def run(self):
         logging.info('\n\n==============Scrape metadata===============')
-        scraper = self._get_scraper()(
-            connection_args=self.connection_args
-        )
+        scraper = self._get_scraper()(connection_args=self.connection_args)
         lineage_data = scraper.scrape()
 
-        logging.info('\n\n==============Prepare metadata===============')
-        datacatalog_prepare = self._get_prepare()()
-        datacatalog_lineage_data = datacatalog_prepare.prepare(lineage_data)
-
         logging.info('\n============End-lineage-datacatalog============')
-        self._get_ingest()(
-                self.project_id,
-                self.location_id
-            ).ingest(
-                lineage_data
-            )
+        self._get_ingest()(self.project_id,
+                           self.location_id).ingest(lineage_data)
 
     def _get_scraper(self):
         return table_lineage_scraper.tableLineageScraper

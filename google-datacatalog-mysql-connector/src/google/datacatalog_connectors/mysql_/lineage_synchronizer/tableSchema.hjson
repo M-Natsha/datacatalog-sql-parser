@@ -1,0 +1,37 @@
+// This schema can be used to cach the schema history for a sql table
+
+{
+    // each key is a table name
+    "tableName" : {
+        // schema is a dict that contains columns
+        "schema" : {
+            // columns is an array that has information of the column at a specific timestamp
+            // eg: at timestamp 400 this column existed
+            // eg: at timestamp 623 this column type was float
+            "columnName" : [{
+                "cursorstamp" : 345,
+                "exists": true
+            }] 
+        },
+
+        // contains ddl sql queries that affected the table schema
+        "logs": [
+            {
+                "cusorstamp": 345,
+                "action": {
+                    "type": "ACTIONTYPE",
+                    "columns": [
+                        "x",
+                        "y",
+                        "z"
+                    ]
+                }
+            }
+        ]
+    }
+}
+
+
+/* When you want to find the schema of a specific 
+table at a specifc time you can loop through all columns 
+and use search to figure the attributes of a column at a specifc time*/

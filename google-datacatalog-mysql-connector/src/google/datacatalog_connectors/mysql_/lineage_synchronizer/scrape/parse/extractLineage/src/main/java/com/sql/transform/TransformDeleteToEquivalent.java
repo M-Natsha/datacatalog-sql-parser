@@ -5,8 +5,8 @@ import java.util.regex.Pattern;
 
 public class TransformDeleteToEquivalent implements ITranformToEquivalent {
     public static void main(String[] args) {
-        String query = "DELETE messages , usersmessages  FROM messages  INNER JOIN usersmessages  \n" +
-                "WHERE messages.messageid= usersmessages.messageid and messages.messageid = '1'";
+        String query = args[0];
+        ;
 
         ITranformToEquivalent transform = new TransformDeleteToEquivalent();
         if(transform.canTransform(query)) {
