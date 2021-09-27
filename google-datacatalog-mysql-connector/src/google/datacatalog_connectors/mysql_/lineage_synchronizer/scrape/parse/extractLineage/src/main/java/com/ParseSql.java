@@ -21,7 +21,10 @@ public class ParseSql {
 
     public static void main(String[] args) throws Exception {
         System.out.println("started");
-        String query = args[0];
+        String query = "UPDATE Persons\n" +
+                "SET  Persons.PersonCityName=(SELECT AddressList.PostCode FROM AddressList\n" +
+                "WHERE AddressList.PersonId = Persons.PersonId)\n" +
+                "\n;";
 
         String result = parseSqlToJson(query);
 
@@ -68,19 +71,23 @@ public class ParseSql {
                     .setLex(Lex.MYSQL)
                     .build();
         }
-        
+
+
         ITranformToEquivalent deleteTransform = new TransformDeleteToEquivalent();
         ITranformToEquivalent updateTransform = new TransformUpdateToEquivalent();
         TransformCreateToEquivalent createEqu = new TransformCreateToEquivalent();
 
         if (deleteTransform.canTransform(query)) {
+            System.out.println("it is delete");
             query = deleteTransform.transform(query);
         } else if (updateTransform.canTransform(query)) {
+            System.out.println("is update");
             query = updateTransform.transform(query);
         } else if (createEqu.canTransform(query)) {
             query = createEqu.transform(query);
         }
 
+        System.out.println(query);
         SqlParser par = SqlParser.create(query, sqlParserConfig);
         return par.parseStmtList();
     }

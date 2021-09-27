@@ -5,25 +5,20 @@
    "source":[
       {
          "tables":[
-            "T1"
-         ],
-         "columns":[
-            "*"
-         ]
-      },
-      {
-         "tables":[
-            "T1"
-         ],
-         "columns":[
-            "id"
-         ]
-      },
-      {
-         "tables":[
+            "T1",
+            {
+               "Operation":"GET_COLUMN",
+               "input":[
+                  "T1"
+               ],
+               "output":[
+                  "id"
+               ]
+            },
             "T2"
          ],
          "columns":[
+            "*",
             {
                "operation":"FUNCTION",
                "input":[

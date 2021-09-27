@@ -1,1 +1,0 @@
-Delete from messages where messageid = '1';

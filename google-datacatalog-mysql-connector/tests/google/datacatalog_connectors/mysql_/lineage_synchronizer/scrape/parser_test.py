@@ -8,6 +8,7 @@ class TestSqlParser():
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
         result = parseSql.MySqlParser().parse_query(query)
+        print(result)
         assert result == expected
 
     def test_complex_select_with_join(self, helpers):
@@ -15,6 +16,7 @@ class TestSqlParser():
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
         result = parseSql.MySqlParser().parse_query(query)
+        print(result)
         assert result == expected
 
     def test_complex_select_with_union_and_join(self, helpers):
@@ -22,6 +24,7 @@ class TestSqlParser():
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
         result = parseSql.MySqlParser().parse_query(query)
+        print(result)
         assert result == expected
 
 
@@ -30,6 +33,7 @@ class TestSqlParser():
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
         result = parseSql.MySqlParser().parse_query(query)
+        print(result)
         assert result == expected
 
 
@@ -38,6 +42,7 @@ class TestSqlParser():
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
         result = parseSql.MySqlParser().parse_query(query)
+        print(result)
         assert result == expected
 
     def test_simple_insert(self, helpers):
@@ -45,6 +50,7 @@ class TestSqlParser():
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
         result = parseSql.MySqlParser().parse_query(query)
+        print(result)
         assert result == expected
         
         
@@ -54,24 +60,14 @@ class TestSqlParser():
         expected = helpers.getParsedResultForTest(testname)
         result = parseSql.MySqlParser().parse_query(query)
         print(result)
-        assert result == expected
-        
-  
-    @pytest.mark.skip(reason="no way of currently testing this")
-    def test_simple_insert_values(self, helpers):
-        testname = "simpleInsertValues"
-        query = helpers.getQueryForTest(testname)
-        expected = helpers.getParsedResultForTest(testname)
-        result = parseSql.MySqlParser().parse_query(query)
-        assert result == expected
-        
+        assert result == expected     
 
-    @pytest.mark.skip(reason="no way of currently testing this")
     def test_simple_update_table(self, helpers):
         testname = "simpleUpdateTable"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
         result = parseSql.MySqlParser().parse_query(query)
+        print(result)
         assert result == expected    
         
     def test_select_where_select(self, helpers):
@@ -117,14 +113,6 @@ class TestSqlParser():
         
     def test_delete_from_multiple_table(self, helpers):
         testname = "DeleteFromMultipleTable"
-        query = helpers.getQueryForTest(testname)
-        expected = helpers.getParsedResultForTest(testname)
-        result = parseSql.MySqlParser().parse_query(query)
-        print(result)
-        assert result == expected
-        
-    def test_delete_from_table(self, helpers):
-        testname = "DeleteFromTable"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getParsedResultForTest(testname)
         result = parseSql.MySqlParser().parse_query(query)

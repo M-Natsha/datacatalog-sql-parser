@@ -11,9 +11,22 @@
    ],
    "source":[
       {
-         "tables":"Persons",
+         "tables":[
+            "Persons",
+            "AddressList",
+            {
+               "Operation":"GET_COLUMN",
+               "input":[
+                  "Persons"
+               ],
+               "output":[
+                  "PersonId"
+               ]
+            }
+         ],
          "columns":[
-            "*"
+            "*",
+            "AddressList.PostCode"
          ]
       }
    ]

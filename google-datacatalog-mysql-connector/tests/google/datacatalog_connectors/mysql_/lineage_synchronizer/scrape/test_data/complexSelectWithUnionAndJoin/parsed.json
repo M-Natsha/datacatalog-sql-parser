@@ -12,18 +12,19 @@
                      "tables":[
                         {
                            "tables":[
-                              "osm"
+                              "osm",
+                              {
+                                 "Operation":"GET_COLUMN",
+                                 "input":[
+                                    
+                                 ],
+                                 "output":[
+                                    "tag"
+                                 ]
+                              }
                            ],
                            "columns":[
                               "objectid"
-                           ]
-                        },
-                        {
-                           "tables":[
-                              
-                           ],
-                           "columns":[
-                              "tag"
                            ]
                         }
                      ],
@@ -41,18 +42,37 @@
                                     "osm",
                                     "t2"
                                  ]
+                              },
+                              {
+                                 "Operation":"GET_COLUMN",
+                                 "input":[
+                                    "osm"
+                                 ],
+                                 "output":[
+                                    "id"
+                                 ]
+                              },
+                              {
+                                 "Operation":"GET_COLUMN",
+                                 "input":[
+                                    "t2"
+                                 ],
+                                 "output":[
+                                    "id"
+                                 ]
+                              },
+                              {
+                                 "Operation":"GET_COLUMN",
+                                 "input":[
+                                    
+                                 ],
+                                 "output":[
+                                    "tag"
+                                 ]
                               }
                            ],
                            "columns":[
                               "objectid"
-                           ]
-                        },
-                        {
-                           "tables":[
-                              
-                           ],
-                           "columns":[
-                              "tag"
                            ]
                         }
                      ],

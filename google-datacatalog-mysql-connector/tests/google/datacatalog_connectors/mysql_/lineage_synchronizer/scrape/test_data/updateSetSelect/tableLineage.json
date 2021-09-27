@@ -1,1 +1,9 @@
-// TODO: write test for lineage
+{
+    "target":[
+       "Persons"
+    ],
+    "source":[
+       "Persons",
+       "AddressList"
+    ]
+ }

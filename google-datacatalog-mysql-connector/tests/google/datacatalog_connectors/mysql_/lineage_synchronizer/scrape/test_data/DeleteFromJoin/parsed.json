@@ -11,17 +11,62 @@
    ],
    "source":[
       {
-         "tables":{
-            "operation":"JOIN",
-            "input":[
-               "tableA",
-               {
-                  "operation":"AS",
-                  "input":"tableB",
-                  "output":"u"
-               }
-            ]
-         },
+         "tables":[
+            "tableA",
+            {
+               "operation":"JOIN",
+               "input":[
+                  "tableA",
+                  {
+                     "operation":"AS",
+                     "input":"tableB",
+                     "output":"u"
+                  }
+               ]
+            },
+            {
+               "Operation":"GET_COLUMN",
+               "input":[
+                  "tableA"
+               ],
+               "output":[
+                  "entityrole"
+               ]
+            },
+            {
+               "Operation":"GET_COLUMN",
+               "input":[
+                  "tableA"
+               ],
+               "output":[
+                  "fieldnum"
+               ]
+            },
+            {
+               "operation":"FUNCTION",
+               "input":[
+                  {
+                     "Operation":"GET_COLUMN",
+                     "input":[
+                        "tableA"
+                     ],
+                     "output":[
+                        "memotext"
+                     ]
+                  }
+               ],
+               "output":"LENGTH"
+            },
+            {
+               "Operation":"GET_COLUMN",
+               "input":[
+                  "tableA"
+               ],
+               "output":[
+                  "memotext"
+               ]
+            }
+         ],
          "columns":[
             "*"
          ]

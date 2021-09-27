@@ -3,6 +3,35 @@ from functools import reduce
 from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape.parse.operation import AppendOrExtend, Scope, getColumnInfo, handleSource
 from iteration_utilities import unique_everseen 
 
+def get_col_with_unknown_tables(node):
+    if isinstance(node, str):
+        return []
+
+    if isinstance(node, list):
+        result = []
+        for source in node:
+            col = get_col_with_unknown_tables(source)
+            if col is not None:
+                AppendOrExtend(result, col)
+
+        return result
+
+    if 'target' in node and 'source' in node:
+        return get_col_with_unknown_tables(node['source'])
+        
+
+    if 'tables' in node:
+        return get_col_with_unknown_tables(node['tables'])
+        
+    if 'Operation' in node:
+        if node['Operation'] == "GET_COLUMN":
+            if len(node['input']) == 0:
+                return node['output'] 
+            else:
+                return []
+        else:    
+            return get_col_with_unknown_tables(node['input'])
+
 def handle_insert(node):
     # extract target data
     target = {"tables": [getColumnInfo(node.targetTable, Scope.TABLE)], "columns": ['*']}
@@ -16,12 +45,10 @@ def handle_insert(node):
 
     return {"source": source, "target": target}
 
-
 def handle_select(node):
     return {
         "source": handleSource(node, Scope.TABLE)
     }
-
 
 def handle_query(node):
     return extract_lineage(node.query)
@@ -53,7 +80,7 @@ def extract_lineage(node):
             return handle_create_table(node)
 
     if hasattr(node, 'targetTable'):
-        return handle_insert(node)
+            return handle_insert(node)
 
     if hasattr(node, 'selectList'):
         return handle_select(node)

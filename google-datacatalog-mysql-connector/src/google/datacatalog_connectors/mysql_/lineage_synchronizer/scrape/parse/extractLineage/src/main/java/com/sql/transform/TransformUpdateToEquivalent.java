@@ -7,23 +7,42 @@ import java.util.regex.Pattern;
 public class TransformUpdateToEquivalent implements ITranformToEquivalent {
     public static void main(String[] args) throws Exception {
         System.out.println("started");
-        String query = args[0];
+        String query = "UPDATE messages , usersmessages \n" +
+                "  SET _ = (SELECT *  FROM messages  INNER JOIN usersmessages  \n" +
+                "WHERE messages.messageid= usersmessages.messageid and messages.messageid = '1')";
         ITranformToEquivalent transformer = new TransformUpdateToEquivalent();
-        String result = transformer.transform(query);
-
-        System.out.println("result: " + result);
+        if(transformer.canTransform(query)) {
+            System.out.println("can transform");
+            query = transformer.transform(query);
+        }
+        System.out.println("result: " + query);
     }
 
     public static String filterSetVarWithDot(String query) {
-        String varRegex = "[A-Za-z0-9_]+\\.[A-Za-z0-9_]+\\s*=";
-        query = query.replaceAll(varRegex,"x=");
+        String setBody = "";
 
+        int setPos = Commons.findSqlKeyword(query,"SET");
+        int wherePos = Commons.findSqlKeyword(query, "WHERE");
+
+        System.out.println((wherePos));
+        if(setPos != -1) {
+            if(wherePos != -1) {
+                setBody = query.substring(setPos + 5, wherePos);
+            } else {
+                setBody = query.substring(setPos);
+            }
+        }
+
+        String varRegex = "[A-Za-z0-9_]+\\.[A-Za-z0-9_]+\\s*=";
+        String newBody = setBody.replaceAll(varRegex,"_ =");
+
+        query = query.replace(setBody,newBody);
         return query;
     }
 
     @Override
     public Boolean canTransform(String query) {
-        String updateRegex = "update\\s+((?s).*)SET((?s).*)";
+        String updateRegex = "\\s*update\\s+((?s).*)SET((?s).*)";
         final Pattern pattern = Pattern.compile(updateRegex, Pattern.CASE_INSENSITIVE);
         return pattern.matcher(query).matches();
     }
@@ -37,7 +56,7 @@ public class TransformUpdateToEquivalent implements ITranformToEquivalent {
     }
 
     private String[] getColList(String query) {
-        String updateRegex = "update\\s+((?s).*)SET((?s).*)";
+        String updateRegex = "\\s*update\\s+((?s).*)SET((?s).*)";
         final Pattern pattern = Pattern.compile(updateRegex, Pattern.CASE_INSENSITIVE);
         // find Matching patterns
         Matcher matcher = pattern.matcher(query);
@@ -48,7 +67,7 @@ public class TransformUpdateToEquivalent implements ITranformToEquivalent {
     }
 
     private String getSetQuery(String query) {
-        String updateRegex = "update\\s+((?s).*)SET((?s).*)";
+        String updateRegex = "\\s*update\\s+((?s).*)SET((?s).*)";
         final Pattern pattern = Pattern.compile(updateRegex, Pattern.CASE_INSENSITIVE);
         // find Matching patterns
         Matcher matcher = pattern.matcher(query);
@@ -80,8 +99,7 @@ public class TransformUpdateToEquivalent implements ITranformToEquivalent {
                 continue;
             }
 
-            equivalentQuery += "INSERT INTO " + target +" SELECT * FROM " + combinedSources + ";";
-            equivalentQuery += "UPDATE  " + target + " SET " + setClosure + ";";
+            equivalentQuery += "UPDATE  " + target + " SET _ = ( SELECT * FROM " + combinedSources + ")," + setClosure + ";" ;
         }
 
         return equivalentQuery;

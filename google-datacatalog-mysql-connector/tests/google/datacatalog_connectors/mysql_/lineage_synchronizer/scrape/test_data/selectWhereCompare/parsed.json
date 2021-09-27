@@ -5,18 +5,19 @@
    "source":[
       {
          "tables":[
-            "T1"
+            "T1",
+            {
+               "Operation":"GET_COLUMN",
+               "input":[
+                  "T1"
+               ],
+               "output":[
+                  "id"
+               ]
+            }
          ],
          "columns":[
             "*"
-         ]
-      },
-      {
-         "tables":[
-            "T1"
-         ],
-         "columns":[
-            "id"
          ]
       }
    ]

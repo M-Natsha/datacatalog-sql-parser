@@ -11,13 +11,33 @@
    ],
    "source":[
       {
-         "tables":[{
-            "operation":"JOIN",
-            "input":[
-               "users",
-               "cars"
-            ]
-         }],
+         "tables":[
+            {
+               "operation":"JOIN",
+               "input":[
+                  "users",
+                  "cars"
+               ]
+            },
+            {
+               "Operation":"GET_COLUMN",
+               "input":[
+                  "users"
+               ],
+               "output":[
+                  "id"
+               ]
+            },
+            {
+               "Operation":"GET_COLUMN",
+               "input":[
+                  "cars"
+               ],
+               "output":[
+                  "user_Id"
+               ]
+            }
+         ],
          "columns":[
             "users.*",
             {

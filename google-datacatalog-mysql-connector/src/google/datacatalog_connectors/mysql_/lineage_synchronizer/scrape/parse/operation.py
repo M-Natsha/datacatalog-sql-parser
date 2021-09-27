@@ -1,10 +1,41 @@
 from functools import reduce
 from enum import Enum
+from iteration_utilities import unique_everseen 
+
 class Scope(Enum):
     COLUMN = 1
     TABLE = 2
     DATABASE = 3
+
+
+def remove_duplicates(myList: list):
+    return list(unique_everseen(myList))
+
+def compress(nodeList):
+    if len(nodeList) <= 1:
+        return nodeList
     
+    if not any('tables' in node for node in nodeList):
+        return nodeList
+    
+    result = {
+        'tables': [],
+        'columns': []
+    }
+    
+    nodeList = remove_duplicates(nodeList)
+    for node in nodeList:
+        if('tables' in node):
+            result['tables'] += node['tables']
+            result['columns'] += node['columns']
+        else:
+            AppendOrExtend(result['tables'],node)
+    
+    result['tables'] = remove_duplicates(result['tables'])
+    result['columns'] = remove_duplicates(result['columns'])
+
+    return result
+
 def AppendOrExtend(myList, item):
     if isinstance(item,list):
         myList.extend(item)
@@ -30,8 +61,8 @@ def handleFrom(node):
     frm = getattr(node, 'from')
 
     source = {
-        "tables": handleSource(frm, Scope.TABLE),
-        "columns": reduce(lambda x, y: AppendOrExtend(x, getColumnInfo(y, Scope.TABLE)), node.selectList,
+        'tables': handleSource(frm, Scope.TABLE),
+        'columns': reduce(lambda x, y: AppendOrExtend(x, getColumnInfo(y, Scope.TABLE)), node.selectList,
                           [])
     }
 
@@ -43,6 +74,10 @@ def handleSource(node, scope):
         return []
     
     sources = []
+    if isinstance(node,list):
+        for element in node:
+            AppendOrExtend(sources, handleSource(element, scope))
+        
     if hasattr(node, 'source'):
         AppendOrExtend(sources, handleSource(node.source, scope))
 
@@ -54,10 +89,9 @@ def handleSource(node, scope):
     if hasattr(node, 'from'):
         AppendOrExtend(sources,  handleFrom(node))
 
-    # handle Union
     if hasattr(node, 'operator'):
         AppendOrExtend(sources,  handleOperation(node, scope))
-
+    
     if hasattr(node, 'left'):
         AppendOrExtend(sources,  handleJoin(node))
 
@@ -67,7 +101,15 @@ def handleSource(node, scope):
     if(hasattr(node, 'where')):
         AppendOrExtend(sources,  handleSource(node.where, Scope.COLUMN))
     
-    return sources
+    if(hasattr(node, 'condition')):
+        AppendOrExtend(sources,  handleSource(node.condition, Scope.COLUMN))
+      
+    if(hasattr(node, 'sourceExpressionList')):
+        print("source expression is here")
+        AppendOrExtend(sources,  handleSource(node.sourceExpressionList, Scope.COLUMN))
+        
+    
+    return compress(sources)
 
 
 def HandleUnion(node, scope):
@@ -98,13 +140,15 @@ def getColumnInfo(node, scope):
 
         return colInfo
 
-    if hasattr(node, 'operator'):
-        return operatorFuncMap[node.operator.kind](node, scope)
-
     if hasattr(node, 'name'):
         return getColumnInfo(node.name, scope)
 
     if hasattr(node, 'names'):
+        node.names = [name for name in node.names if name != "_"]
+        
+        if len(node.names) == 0:
+            return []
+        
         if scope == Scope.TABLE:    
             result = ""
             for name in node.names:
@@ -117,12 +161,13 @@ def getColumnInfo(node, scope):
                     result += name
         else:
             result = {
-                "tables": [],
-                "columns": []
+                "Operation": "GET_COLUMN",
+                "input": [],
+                "output": []
             }
             
             lastName = node.names[-1]
-            result["columns"] = ['*' if lastName == '' else lastName]
+            result["output"] = ['*' if lastName == '' else lastName]
             
             if len(node.names) > 1:
                 tableName = ""
@@ -133,11 +178,11 @@ def getColumnInfo(node, scope):
                     tableName += name
                     
                 if tableName != '':
-                    result['tables'] = [tableName]
+                    result['input'] = [tableName]
             
         return result
     
-    return []
+    return handleSource(node, scope)
 
 
 def handleAs(node, scope):
