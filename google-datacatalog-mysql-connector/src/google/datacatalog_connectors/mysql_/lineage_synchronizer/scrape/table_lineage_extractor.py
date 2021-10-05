@@ -4,7 +4,7 @@ from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape.parse.tran
 
 from .parse import parseSql
 from .parse.lineage import remove_duplicates
-from .parse.operation import AppendOrExtend
+from .parse.operation import append_or_extend
 
 noLineageQueryPatterns = [
     re.compile("\\s*SET\\s+((?s).*)", re.IGNORECASE),
@@ -34,7 +34,7 @@ def is_insert_values(text: str) -> bool:
 
 
 def remove_aliases(myList: Sequence) -> Sequence[str]:
-    """[summary]
+    """ Remove alias names of the tables
 
     Args:
         myList: List of table names (string) and aliase object
@@ -47,7 +47,7 @@ def remove_aliases(myList: Sequence) -> Sequence[str]:
 
     for table in myList:
         if 'operation' in table and table['operation'] == "AS":
-            AppendOrExtend(finalResult, table['input'])
+            append_or_extend(finalResult, table['input'])
             aliases.add(table['output'])
     filtered_list = [
         table for table in finalResult
@@ -118,9 +118,16 @@ class tableLineageExtractor:
     def _get_sql_parser(self):
         return parseSql.MySqlParser
 
-    def extract(self, query):
-        parser = self._get_sql_parser()() 
-        parseTree = parser.parse_query(query)
+    def extract(self, query:str):
+        """Parses an SQL query and then extract lineage info from it
 
+        Args:
+            query (str): A SQL query
+
+        Returns:
+            Lineage parse tree
+        """
+        parser = self._get_sql_parser()() 
+        parseTree = parser.parse_query(query) # Parse sql query
         lineage = self.extract_from_node(parseTree)  # extract lineage tree
         return lineage

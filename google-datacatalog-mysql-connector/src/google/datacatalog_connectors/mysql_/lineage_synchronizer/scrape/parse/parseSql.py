@@ -15,10 +15,6 @@ ddlRegex = [
 
 
 class MySqlParser():
-
-    def queryIsDdl(self):
-        return True
-
     def parse_query(self, query: str):
         transformer = TransformGeneral()
         query = transformer .transform(query)

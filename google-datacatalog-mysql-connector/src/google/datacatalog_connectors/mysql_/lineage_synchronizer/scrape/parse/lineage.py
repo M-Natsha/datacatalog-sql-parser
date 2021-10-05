@@ -1,6 +1,6 @@
 from functools import reduce
 from .operation \
-    import AppendOrExtend, Scope, getColumnInfo, handleSource
+    import append_or_extend, Scope, get_col_info, handle_source
 from iteration_utilities import unique_everseen
 
 
@@ -13,7 +13,7 @@ def get_col_with_unknown_tables(node):
         for source in node:
             col = get_col_with_unknown_tables(source)
             if col is not None:
-                AppendOrExtend(result, col)
+                append_or_extend(result, col)
 
         return result
 
@@ -36,29 +36,29 @@ def get_col_with_unknown_tables(node):
 def handle_insert(node):
     # extract target data
     target = {
-        "tables": [getColumnInfo(node.targetTable, Scope.TABLE)],
+        "tables": [get_col_info(node.targetTable, Scope.TABLE)],
         "columns": []
     }
 
     if hasattr(node, 'targetColumnList') and len(node.targetColumnList) > 0:
-        AppendOrExtend(target["columns"], getColumnInfo(node.targetColumnList, Scope.TABLE))
+        append_or_extend(target["columns"], get_col_info(node.targetColumnList, Scope.TABLE))
     
     if len(target["columns"]) == 0:
         target["columns"] = ['*']
         
     if hasattr(node, 'columnList') and node.columnList is not None:
         target['columns'] = reduce(
-            lambda x, y: AppendOrExtend(x, getColumnInfo(y, Scope.TABLE)),
+            lambda x, y: append_or_extend(x, get_col_info(y, Scope.TABLE)),
             node.columnList, [])
 
     # exctract source data
-    source = handleSource(node, Scope.TABLE)
+    source = handle_source(node, Scope.TABLE)
 
     return {"source": source, "target": target}
 
 
 def handle_select(node):
-    return {"source": handleSource(node, Scope.TABLE)}
+    return {"source": handle_source(node, Scope.TABLE)}
 
 
 def handle_query(node):
@@ -71,14 +71,14 @@ def handle_create_table(node):
             "tables": [],
             "columns": []
         },
-        "source": handleSource(node, Scope.TABLE)
+        "source": handle_source(node, Scope.TABLE)
     }
 
-    res['target']['tables'] = [getColumnInfo(node.name, Scope.TABLE)]
+    res['target']['tables'] = [get_col_info(node.name, Scope.TABLE)]
 
     if hasattr(node, 'columnList') and node.columnList is not None:
         res['target']['columns'] = reduce(
-            lambda x, y: x + [getColumnInfo(y, Scope.TABLE)], node.columnList,
+            lambda x, y: x + [get_col_info(y, Scope.TABLE)], node.columnList,
             [])
     else:
         res['target']['columns'] = ['*']
@@ -104,6 +104,7 @@ def extract_lineage(node):
 
 
 def remove_duplicates(myList: list):
+    """removes duplicates from a list and reserve its order"""
     return list(unique_everseen(myList))
 
 

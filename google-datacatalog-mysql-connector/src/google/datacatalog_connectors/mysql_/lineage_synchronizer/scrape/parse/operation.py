@@ -29,7 +29,7 @@ def compress(nodeList):
             result['tables'] += node['tables']
             result['columns'] += node['columns']
         else:
-            AppendOrExtend(result['tables'], node)
+            append_or_extend(result['tables'], node)
 
     result['tables'] = remove_duplicates(result['tables'])
     result['columns'] = remove_duplicates(result['columns'])
@@ -37,7 +37,7 @@ def compress(nodeList):
     return result
 
 
-def AppendOrExtend(myList: list, item):
+def append_or_extend(myList: list, item):
     """Returns and modifis a list by appending an item to the list
     or merging the item with the list if the item is also a list
 
@@ -56,34 +56,34 @@ def AppendOrExtend(myList: list, item):
     return myList
 
 
-def handleJoin(node):
+def handle_join(node):
     par = {"operation": "JOIN", "input": []}
 
     scope = Scope.TABLE
     if hasattr(node, 'left'):
-        AppendOrExtend(par['input'], handleSource(node.left, scope))
+        append_or_extend(par['input'], handle_source(node.left, scope))
 
     if hasattr(node, 'right'):
-        AppendOrExtend(par['input'], handleSource(node.right, scope))
+        append_or_extend(par['input'], handle_source(node.right, scope))
 
     return par
 
 
-def handleFrom(node):
+def handle_from(node):
     frm = getattr(node, 'from')
 
     source = {
         'tables':
-        handleSource(frm, Scope.TABLE),
+        handle_source(frm, Scope.TABLE),
         'columns':
-        reduce(lambda x, y: AppendOrExtend(x, getColumnInfo(y, Scope.TABLE)),
+        reduce(lambda x, y: append_or_extend(x, get_col_info(y, Scope.TABLE)),
                node.selectList, [])
     }
 
     return source
 
 
-def handleSource(node, scope):
+def handle_source(node, scope):
     """parses Apache Calcite Node and extract information related to 
 
     Args:
@@ -99,58 +99,50 @@ def handleSource(node, scope):
     sources = []
     if isinstance(node, list):
         for element in node:
-            AppendOrExtend(sources, handleSource(element, scope))
+            append_or_extend(sources, handle_source(element, scope))
 
     if hasattr(node, 'source'):
-        AppendOrExtend(sources, handleSource(node.source, scope))
+        append_or_extend(sources, handle_source(node.source, scope))
 
     # return names
     if hasattr(node, 'names'):
-        AppendOrExtend(sources, getColumnInfo(node, scope))
+        append_or_extend(sources, get_col_info(node, scope))
 
     # handle from
     if hasattr(node, 'from'):
-        AppendOrExtend(sources, handleFrom(node))
+        append_or_extend(sources, handle_from(node))
 
     if hasattr(node, 'operator'):
-        AppendOrExtend(sources, handleOperation(node, scope))
+        append_or_extend(sources, handle_operation(node, scope))
 
     if hasattr(node, 'left'):
-        AppendOrExtend(sources, handleJoin(node))
+        append_or_extend(sources, handle_join(node))
 
     if hasattr(node, 'query'):
-        AppendOrExtend(sources, handleSource(node.query, scope))
+        append_or_extend(sources, handle_source(node.query, scope))
 
     if (hasattr(node, 'where')):
-        AppendOrExtend(sources, handleSource(node.where, Scope.COLUMN))
+        append_or_extend(sources, handle_source(node.where, Scope.COLUMN))
 
     if (hasattr(node, 'condition')):
-        AppendOrExtend(sources, handleSource(node.condition, Scope.COLUMN))
+        append_or_extend(sources, handle_source(node.condition, Scope.COLUMN))
 
     if (hasattr(node, 'sourceExpressionList')):
-        AppendOrExtend(sources,
-                       handleSource(node.sourceExpressionList, Scope.COLUMN))
+        append_or_extend(sources,
+                       handle_source(node.sourceExpressionList, Scope.COLUMN))
 
     return compress(sources)
 
 
-def HandleUnion(node, scope):
+def handle_union(node, scope):
     par = {"operation": "UNION", "input": []}
 
     for query in node.operands:
-        AppendOrExtend(par["input"], handleSource(query, Scope.TABLE))
+        append_or_extend(par["input"], handle_source(query, Scope.TABLE))
     return par
 
 
-def defaultOperation(node, scope):
-    return {
-        'operation': node.operator.kind,
-        'input': getColumnInfo(node.operands[0], scope),
-        'output': node.operator.name
-    }
-
-
-def getColumnInfo(node, scope):
+def get_col_info(node, scope):
     # check if its an array
     if hasattr(node, 'value'):
         return [node.value.stringValue]
@@ -158,12 +150,12 @@ def getColumnInfo(node, scope):
     if isinstance(node, list):
         colInfo = []
         for col in node:
-            AppendOrExtend(colInfo, getColumnInfo(col, scope))
+            append_or_extend(colInfo, get_col_info(col, scope))
 
         return colInfo
 
     if hasattr(node, 'name'):
-        return getColumnInfo(node.name, scope)
+        return get_col_info(node.name, scope)
 
     if hasattr(node, 'names'):
         node.names = [name for name in node.names if name != "_"]
@@ -200,25 +192,25 @@ def getColumnInfo(node, scope):
 
         return result
 
-    return handleSource(node, scope)
+    return handle_source(node, scope)
 
 
-def handleAs(node, scope):
+def handle_as(node, scope):
     body = {
         'operation': 'AS',
-        'input': getColumnInfo(node.operands[0], scope),
-        'output': getColumnInfo(node.operands[1], scope)
+        'input': get_col_info(node.operands[0], scope),
+        'output': get_col_info(node.operands[1], scope)
     }
 
     return body
 
 
-def handleFunc(node, scope):
+def handle_func(node, scope):
     body = {
         'operation':
         'FUNCTION',
         'input':
-        reduce(lambda x, y: AppendOrExtend(x, getColumnInfo(y, scope)),
+        reduce(lambda x, y: append_or_extend(x, get_col_info(y, scope)),
                node.operands, []),
         'output':
         node.operator.name
@@ -227,19 +219,19 @@ def handleFunc(node, scope):
 
 
 def handle_create_table(node, scope):
-    return handleSource(node.query, scope)
+    return handle_source(node.query, scope)
 
 
 operatorFuncMap = {
-    'AS': handleAs,
-    'OTHER_FUNCTION': handleFunc,
-    "OTHER": handleFunc,
-    "UNION": HandleUnion,
+    'AS': handle_as,
+    'OTHER_FUNCTION': handle_func,
+    "OTHER": handle_func,
+    "UNION": handle_union,
     "CREATE_TABLE": handle_create_table
 }
 
 
-def handleOperation(node, scope):
+def handle_operation(node, scope):
     type = node.operator.kind
     if type in operatorFuncMap:
         return operatorFuncMap[type](node, scope)
@@ -249,6 +241,6 @@ def handleOperation(node, scope):
 
     sources = []
     for operand in node.operands:
-        sources = AppendOrExtend(sources, handleSource(operand, scope))
+        sources = append_or_extend(sources, handle_source(operand, scope))
 
     return sources

@@ -5,6 +5,7 @@ from os import path
 
 
 class JavaParserConnector:
+    """Wrapper for apache calcite parser"""
     _ParseSql = None
 
     def __init__(self):
@@ -20,5 +21,13 @@ class JavaParserConnector:
         JavaParserConnector._ParseSql = import_module('com.ParseSql')
 
 
-    def parse_query(self, query):
+    def parse_query(self, query: str):
+        """Parses an Sql query using apache calcite
+
+        Args:
+            query (str): a Sql query
+
+        Returns:
+            Apache parsed tree
+        """
         return JavaParserConnector._ParseSql.parseSqlToJson(query)
