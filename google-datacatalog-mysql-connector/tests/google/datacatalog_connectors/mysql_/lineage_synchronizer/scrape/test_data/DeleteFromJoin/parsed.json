@@ -27,10 +27,28 @@
             {
                "Operation":"GET_COLUMN",
                "input":[
+                  "u"
+               ],
+               "output":[
+                  "qlabel"
+               ]
+            },
+            {
+               "Operation":"GET_COLUMN",
+               "input":[
                   "tableA"
                ],
                "output":[
                   "entityrole"
+               ]
+            },
+            {
+               "Operation":"GET_COLUMN",
+               "input":[
+                  "u"
+               ],
+               "output":[
+                  "fieldnum"
                ]
             },
             {
@@ -64,6 +82,15 @@
                ],
                "output":[
                   "memotext"
+               ]
+            },
+            {
+               "Operation":"GET_COLUMN",
+               "input":[
+                  "u"
+               ],
+               "output":[
+                  "FldFormat"
                ]
             }
          ],

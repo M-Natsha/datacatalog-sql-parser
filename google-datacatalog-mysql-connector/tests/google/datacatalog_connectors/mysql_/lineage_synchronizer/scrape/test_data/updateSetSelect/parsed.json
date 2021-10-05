@@ -5,7 +5,7 @@
             "Persons"
          ],
          "columns":[
-            "*"
+            "Persons.PersonCityName"
          ]
       }
    ],
@@ -14,6 +14,15 @@
          "tables":[
             "Persons",
             "AddressList",
+            {
+               "Operation":"GET_COLUMN",
+               "input":[
+                  "AddressList"
+               ],
+               "output":[
+                  "PersonId"
+               ]
+            },
             {
                "Operation":"GET_COLUMN",
                "input":[

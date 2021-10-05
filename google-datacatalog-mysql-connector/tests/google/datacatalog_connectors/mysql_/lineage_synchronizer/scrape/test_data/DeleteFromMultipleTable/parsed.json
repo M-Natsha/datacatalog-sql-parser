@@ -30,6 +30,15 @@
             {
                "Operation":"GET_COLUMN",
                "input":[
+                  "messages"
+               ],
+               "output":[
+                  "messageid"
+               ]
+            },
+            {
+               "Operation":"GET_COLUMN",
+               "input":[
                   "usersmessages"
                ],
                "output":[

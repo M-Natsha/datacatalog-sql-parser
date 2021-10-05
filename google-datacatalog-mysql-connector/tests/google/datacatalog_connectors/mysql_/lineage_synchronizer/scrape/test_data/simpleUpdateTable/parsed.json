@@ -5,7 +5,8 @@
             "cars"
          ],
          "columns":[
-            "*"
+            "vendor",
+            "x"
          ]
       },
       {
@@ -13,7 +14,8 @@
             "users"
          ],
          "columns":[
-            "*"
+            "vendor",
+            "x"
          ]
       }
    ],
@@ -40,7 +42,7 @@
             },
             {
                "operation":"JOIN",
-               "input":[
+               "input":[   
                   {
                      "operation":"JOIN",
                      "input":[

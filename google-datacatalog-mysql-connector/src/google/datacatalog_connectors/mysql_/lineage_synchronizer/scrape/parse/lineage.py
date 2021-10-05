@@ -37,9 +37,15 @@ def handle_insert(node):
     # extract target data
     target = {
         "tables": [getColumnInfo(node.targetTable, Scope.TABLE)],
-        "columns": ['*']
+        "columns": []
     }
 
+    if hasattr(node, 'targetColumnList') and len(node.targetColumnList) > 0:
+        AppendOrExtend(target["columns"], getColumnInfo(node.targetColumnList, Scope.TABLE))
+    
+    if len(target["columns"]) == 0:
+        target["columns"] = ['*']
+        
     if hasattr(node, 'columnList') and node.columnList is not None:
         target['columns'] = reduce(
             lambda x, y: AppendOrExtend(x, getColumnInfo(y, Scope.TABLE)),

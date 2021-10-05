@@ -4,10 +4,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.sql.transform.ITranformToEquivalent;
-import com.sql.transform.TransformCreateToEquivalent;
-import com.sql.transform.TransformDeleteToEquivalent;
-import com.sql.transform.TransformUpdateToEquivalent;
 import org.apache.calcite.config.Lex;
 import org.apache.calcite.sql.SqlNode;
 import org.apache.calcite.sql.parser.SqlParseException;
@@ -52,7 +48,6 @@ public class ParseSql {
     }
 
     public static SqlNode parse(String query) throws SqlParseException {
-
         query = preprocessQuery(query);
         // Change the parser configuration depending on Sql query type
         SqlParser.Config sqlParserConfig;
@@ -67,19 +62,6 @@ public class ParseSql {
                     .setConformance(SqlConformanceEnum.MYSQL_5)
                     .setLex(Lex.MYSQL)
                     .build();
-        }
-
-
-        ITranformToEquivalent deleteTransform = new TransformDeleteToEquivalent();
-        ITranformToEquivalent updateTransform = new TransformUpdateToEquivalent();
-        TransformCreateToEquivalent createEqu = new TransformCreateToEquivalent();
-
-        if (deleteTransform.canTransform(query)) {
-            query = deleteTransform.transform(query);
-        } else if (updateTransform.canTransform(query)) {
-            query = updateTransform.transform(query);
-        } else if (createEqu.canTransform(query)) {
-            query = createEqu.transform(query);
         }
 
         SqlParser par = SqlParser.create(query, sqlParserConfig);

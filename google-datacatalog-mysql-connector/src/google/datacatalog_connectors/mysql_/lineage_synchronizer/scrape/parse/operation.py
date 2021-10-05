@@ -4,6 +4,7 @@ from iteration_utilities import unique_everseen
 
 
 class Scope(Enum):
+    """Describes the type of the variabe. we parse on the query"""
     COLUMN = 1
     TABLE = 2
     DATABASE = 3
@@ -36,7 +37,17 @@ def compress(nodeList):
     return result
 
 
-def AppendOrExtend(myList, item):
+def AppendOrExtend(myList: list, item):
+    """Returns and modifis a list by appending an item to the list
+    or merging the item with the list if the item is also a list
+
+    Args:
+        myList ([type]): [description]
+        item ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     if isinstance(item, list):
         myList.extend(item)
     else:
@@ -73,6 +84,15 @@ def handleFrom(node):
 
 
 def handleSource(node, scope):
+    """parses Apache Calcite Node and extract information related to 
+
+    Args:
+        node ([type]): [description]
+        scope ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     if node is None:
         return []
 
@@ -108,7 +128,6 @@ def handleSource(node, scope):
         AppendOrExtend(sources, handleSource(node.condition, Scope.COLUMN))
 
     if (hasattr(node, 'sourceExpressionList')):
-        print("source expression is here")
         AppendOrExtend(sources,
                        handleSource(node.sourceExpressionList, Scope.COLUMN))
 
