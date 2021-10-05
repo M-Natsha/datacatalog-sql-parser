@@ -1,35 +1,47 @@
 import re
+from typing import Sequence
+from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape.parse.transform_equ.commons import Commons
 
 from .parse import parseSql
-from .parse.java_parser_connector import JavaParserConnector
 from .parse.lineage import remove_duplicates
 from .parse.operation import AppendOrExtend
 
 noLineageQueryPatterns = [
-    re.compile("\\s*SET\\s+.*", re.IGNORECASE),
-    re.compile("\\s*DROP\\s+(.*)", re.IGNORECASE),
-    re.compile("\\s*EXPLAIN\\s+(.*)", re.IGNORECASE),
-    re.compile("\\s*SHOW\\s+(.*)", re.IGNORECASE),
-    re.compile("\\s*DESC\\s+(.*)", re.IGNORECASE),
-    re.compile("\\s*DESCRIBE\\s+(.*)", re.IGNORECASE),
-    re.compile("\\s*DESCRIBE\\s+(.*)", re.IGNORECASE),
-    re.compile("\\s*use\\s+(.*)", re.IGNORECASE),
-    re.compile("\s*CREATE\s+TABLE((?s).*)\s+ENGINE\s+=\s+[A-Za-z1-9]+;",
+    re.compile("\\s*SET\\s+((?s).*)", re.IGNORECASE),
+    re.compile("\\s*DROP\\s+((?s).*)", re.IGNORECASE),
+    re.compile("\\s*EXPLAIN\\s+((?s).*)", re.IGNORECASE),
+    re.compile("\\s*SHOW\\s+((?s).*)", re.IGNORECASE),
+    re.compile("\\s*DESC\\s+((?s).*)", re.IGNORECASE),
+    re.compile("\\s*DESCRIBE\\s+((?s).*)", re.IGNORECASE),
+    re.compile("\\s*DESCRIBE\\s+((?s).*)", re.IGNORECASE),
+    re.compile("\\s*use\\s+((?s).*)", re.IGNORECASE),
+    re.compile("\\s*select\\s+((?s).*)", re.IGNORECASE),
+    re.compile("\\s*CREATE\\s+TABLE((?s).*)\\s+ENGINE\\s+=\\s+[A-Za-z1-9]+;",
                re.IGNORECASE),
 ]
 
 
-def is_insert_values(text):
-    javaParserConnector = JavaParserConnector()
-    insertIntoKeyword = javaParserConnector.get_sql_keyword(
-        text, "\\s*INSERT\\s+INTO")
-    valuesKeyword = javaParserConnector.get_sql_keyword(text, "VALUES")
+def is_insert_values(text: str) -> bool:
+    """Checks if a Sql query is "Insert <table_name> Values <Value-List>" query
 
-    print("keywords is ", insertIntoKeyword, valuesKeyword)
+    Args:
+        text: Sql query string
+    """
+    insertIntoKeyword = Commons.findSqlKeyword(text, "INSERT\\s+INTO")
+    valuesKeyword = Commons.findSqlKeyword(text, "VALUES")
+
     return insertIntoKeyword != -1 and valuesKeyword != -1
 
 
-def remove_aliases(myList):
+def remove_aliases(myList: Sequence) -> Sequence[str]:
+    """[summary]
+
+    Args:
+        myList: List of table names (string) and aliase object
+
+    Returns:
+        filtered_list: list of table names removing all aliases
+    """
     finalResult = myList
     aliases = set()
 
@@ -37,16 +49,21 @@ def remove_aliases(myList):
         if 'operation' in table and table['operation'] == "AS":
             AppendOrExtend(finalResult, table['input'])
             aliases.add(table['output'])
-
-    return [
+    filtered_list = [
         table for table in finalResult
         if isinstance(table, str) and table not in aliases
     ]
 
+    return filtered_list
+
 
 class tableLineageExtractor:
 
-    def query_has_lineage(self, query):
+    def query_has_lineage(self, query: str):
+        """Quickly check if a query has lineage information
+        It might result in some false positive
+        """
+        
         global noLineageQueryPatterns
 
         for pattern in noLineageQueryPatterns:
@@ -56,8 +73,7 @@ class tableLineageExtractor:
         if (is_insert_values(query)):
             return False
 
-        # else it has lineage info
-        return True
+        return True  # else it has lineage info
 
     def extract_from_node_helper(self, node):
         if isinstance(node, str):
@@ -89,7 +105,6 @@ class tableLineageExtractor:
         if 'operation' in node:
             if (node['operation'] == "AS"):
                 node['input'] = self.extract_from_node_helper(node['input'])
-                print(node)
                 return node
             elif node['operation'] == "GET_COLUMN":
                 return self.extract_from_node_helper(node['input'])
@@ -104,11 +119,8 @@ class tableLineageExtractor:
         return parseSql.MySqlParser
 
     def extract(self, query):
-        # Parse sql query
-        parser = self._get_sql_parser()()
+        parser = self._get_sql_parser()() 
         parseTree = parser.parse_query(query)
 
-        # extract lineage
-        lineage = self.extract_from_node(parseTree)
-        # return lineage
+        lineage = self.extract_from_node(parseTree)  # extract lineage tree
         return lineage
