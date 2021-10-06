@@ -1,4 +1,4 @@
-class logsReader():
+class LogsReader():
 
     def __init__(self, sqlConnection):
         self._sqlConnection = sqlConnection

@@ -1,10 +1,10 @@
 import logging
 from google.datacatalog_connectors.mysql_.scrape import metadata_scraper
 from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape \
-    import logs_reader, table_lineage_extractor
+    import logs_reader, asset_level_lineage_extractor
 
 
-class tableLineageScraper():
+class AssetLevelLinneagScraper():
 
     def __init__(self, connection_args):
         self.connection_args = connection_args
@@ -44,7 +44,7 @@ class tableLineageScraper():
         return metadata_scraper.MetadataScraper
 
     def _get_log_reader(self):
-        return logs_reader.logsReader
+        return logs_reader.LogsReader
 
     def _get_lineage_extractor(self):
-        return table_lineage_extractor.tableLineageExtractor
+        return asset_level_lineage_extractor.AssetLevelLineageExtractor

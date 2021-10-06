@@ -20,44 +20,42 @@ noLineageQueryPatterns = [
                re.IGNORECASE),
 ]
 
+class AssetLevelLineageExtractor:
+    @staticmethod
+    def _remove_aliases(myList: Sequence) -> Sequence[str]:
+        """ Remove alias names of the tables
 
-def is_insert_values(text: str) -> bool:
-    """Checks if a Sql query is "Insert <table_name> Values <Value-List>" query
+        Args:
+            myList: List of table names (string) and aliase object
 
-    Args:
-        text: Sql query string
-    """
-    insertIntoKeyword = Commons.findSqlKeyword(text, "INSERT\\s+INTO")
-    valuesKeyword = Commons.findSqlKeyword(text, "VALUES")
+        Returns:
+            filtered_list: list of table names removing all aliases
+        """
+        finalResult = myList
+        aliases = set()
 
-    return insertIntoKeyword != -1 and valuesKeyword != -1
+        for table in myList:
+            if 'operation' in table and table['operation'] == "AS":
+                append_or_extend(finalResult, table['input'])
+                aliases.add(table['output'])
+        filtered_list = [
+            table for table in finalResult
+            if isinstance(table, str) and table not in aliases
+        ]
 
+        return filtered_list
 
-def remove_aliases(myList: Sequence) -> Sequence[str]:
-    """ Remove alias names of the tables
+    @staticmethod
+    def _is_insert_values(text: str) -> bool:
+        """Checks if a Sql query is "Insert <table_name> Values <Value-List>" query
 
-    Args:
-        myList: List of table names (string) and aliase object
+        Args:
+            text: Sql query string
+        """
+        insertIntoKeyword = Commons.findSqlKeyword(text, "INSERT\\s+INTO")
+        valuesKeyword = Commons.findSqlKeyword(text, "VALUES")
 
-    Returns:
-        filtered_list: list of table names removing all aliases
-    """
-    finalResult = myList
-    aliases = set()
-
-    for table in myList:
-        if 'operation' in table and table['operation'] == "AS":
-            append_or_extend(finalResult, table['input'])
-            aliases.add(table['output'])
-    filtered_list = [
-        table for table in finalResult
-        if isinstance(table, str) and table not in aliases
-    ]
-
-    return filtered_list
-
-
-class tableLineageExtractor:
+        return insertIntoKeyword != -1 and valuesKeyword != -1
 
     def query_has_lineage(self, query: str):
         """Quickly check if a query has lineage information
@@ -70,7 +68,7 @@ class tableLineageExtractor:
             if pattern.match(query):
                 return False
 
-        if (is_insert_values(query)):
+        if (AssetLevelLineageExtractor._is_insert_values(query)):
             return False
 
         return True  # else it has lineage info
@@ -100,7 +98,7 @@ class tableLineageExtractor:
 
         if 'tables' in node:
             result = self.extract_from_node_helper(node['tables'])
-            return remove_aliases(result)
+            return AssetLevelLineageExtractor._remove_aliases(result)
 
         if 'operation' in node:
             if (node['operation'] == "AS"):

@@ -1,6 +1,6 @@
 import pathlib
 
-from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape.table_lineage_extractor import tableLineageExtractor
+from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape.asset_level_lineage_extractor import AssetLevelLineageExtractor
 import json
 import pytest
 

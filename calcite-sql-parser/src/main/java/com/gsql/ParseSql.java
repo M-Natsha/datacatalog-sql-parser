@@ -1,4 +1,4 @@
-package com;
+package com.gsql;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -11,8 +11,6 @@ import org.apache.calcite.sql.parser.SqlParser;
 import org.apache.calcite.sql.parser.ddl.SqlDdlParserImpl;
 import org.apache.calcite.sql.validate.SqlConformanceEnum;
 
-import java.util.regex.Pattern;
-
 public class ParseSql {
 
     public static void main(String[] args) throws Exception {
@@ -24,45 +22,15 @@ public class ParseSql {
         System.out.println("result: " + result);
     }
 
-    public static boolean isDdlOperation(String query) {
-        String[] ddlRegex = {
-                "\\s*create\\s+((?s).*)" // Create query
-                , "\\s*alter\\s+((?s).*)" // Alter query
-                , "\\s*drop\\s+((?s).*)" // Drop query
-        };
-
-        for (String validator : ddlRegex) {
-            final Pattern pattern = Pattern.compile(validator, Pattern.CASE_INSENSITIVE);
-            if (pattern.matcher(query).matches()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public static String preprocessQuery(String query) {
-        // Replace " with '
-        query = query.replace('\"', '\'');
-        return query;
-    }
-
     public static SqlNode parse(String query) throws SqlParseException {
-        query = preprocessQuery(query);
         // Change the parser configuration depending on Sql query type
         SqlParser.Config sqlParserConfig;
-        if (isDdlOperation(query)) {
-            sqlParserConfig = SqlParser.configBuilder()
-                    .setParserFactory(SqlDdlParserImpl.FACTORY)
-                    .setConformance(SqlConformanceEnum.MYSQL_5)
-                    .setLex(Lex.MYSQL)
-                    .build();
-        } else {
-            sqlParserConfig = SqlParser.configBuilder()
-                    .setConformance(SqlConformanceEnum.MYSQL_5)
-                    .setLex(Lex.MYSQL)
-                    .build();
-        }
+
+        sqlParserConfig = SqlParser.configBuilder()
+                .setParserFactory(SqlDdlParserImpl.FACTORY)
+                .setConformance(SqlConformanceEnum.MYSQL_5)
+                .setLex(Lex.MYSQL)
+                .build();
 
         SqlParser par = SqlParser.create(query, sqlParserConfig);
         return par.parseStmtList();

@@ -1,4 +1,4 @@
-from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape.table_lineage_extractor import tableLineageExtractor
+from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape.asset_level_lineage_extractor import AssetLevelLineageExtractor
 from .utils import *
 
 
@@ -8,7 +8,7 @@ class TestTableLineage():
         testname = "simpleSelect"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
-        result = tableLineageExtractor().extract(query)
+        result = AssetLevelLineageExtractor().extract(query)
         print(result)
         assert result == expected
 
@@ -16,7 +16,7 @@ class TestTableLineage():
         testname = "complexSelectWithJoin"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
-        result = tableLineageExtractor().extract(query)
+        result = AssetLevelLineageExtractor().extract(query)
         print(result)
         assert result == expected
 
@@ -24,7 +24,7 @@ class TestTableLineage():
         testname = "complexSelectWithUnionAndJoin"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
-        result = tableLineageExtractor().extract(query)
+        result = AssetLevelLineageExtractor().extract(query)
         print(result)
         assert result == expected
 
@@ -32,7 +32,7 @@ class TestTableLineage():
         testname = "CreateTableAsSelect"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
-        result = tableLineageExtractor().extract(query)
+        result = AssetLevelLineageExtractor().extract(query)
         print(result)
         assert result == expected
 
@@ -40,7 +40,7 @@ class TestTableLineage():
         testname = "CreateTableWithValuesAsSelect"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
-        result = tableLineageExtractor().extract(query)
+        result = AssetLevelLineageExtractor().extract(query)
         print(result)
         assert result == expected
 
@@ -48,7 +48,7 @@ class TestTableLineage():
         testname = "CreateTableWithValuesAsSelect2"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
-        result = tableLineageExtractor().extract(query)
+        result = AssetLevelLineageExtractor().extract(query)
         print(result)
         assert result == expected
 
@@ -56,7 +56,7 @@ class TestTableLineage():
         testname = "DeleteAndSelect"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
-        result = tableLineageExtractor().extract(query)
+        result = AssetLevelLineageExtractor().extract(query)
         print(result)
         assert result == expected
 
@@ -64,7 +64,7 @@ class TestTableLineage():
         testname = "DeleteAndSelect2"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
-        result = tableLineageExtractor().extract(query)
+        result = AssetLevelLineageExtractor().extract(query)
         print(result)
         assert result == expected
 
@@ -72,7 +72,7 @@ class TestTableLineage():
         testname = "DeleteFromJoin"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
-        result = tableLineageExtractor().extract(query)
+        result = AssetLevelLineageExtractor().extract(query)
         print(result)
         assert result == expected
 
@@ -80,7 +80,7 @@ class TestTableLineage():
         testname = "DeleteFromMultipleTable"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
-        result = tableLineageExtractor().extract(query)
+        result = AssetLevelLineageExtractor().extract(query)
         print(result)
         assert result == expected
 
@@ -88,7 +88,7 @@ class TestTableLineage():
         testname = "selectWhereCompare"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
-        result = tableLineageExtractor().extract(query)
+        result = AssetLevelLineageExtractor().extract(query)
         print(result)
         assert result == expected
 
@@ -96,7 +96,7 @@ class TestTableLineage():
         testname = "selectWhereSelect"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
-        result = tableLineageExtractor().extract(query)
+        result = AssetLevelLineageExtractor().extract(query)
         print(result)
         assert result == expected
 
@@ -104,7 +104,7 @@ class TestTableLineage():
         testname = "simpleInsertFrom"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
-        result = tableLineageExtractor().extract(query)
+        result = AssetLevelLineageExtractor().extract(query)
         print(result)
         assert result == expected
 
@@ -112,7 +112,7 @@ class TestTableLineage():
         testname = "simpleSelect"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
-        result = tableLineageExtractor().extract(query)
+        result = AssetLevelLineageExtractor().extract(query)
         print(result)
         assert result == expected
 
@@ -120,7 +120,7 @@ class TestTableLineage():
         testname = "simpleUpdateTable"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
-        result = tableLineageExtractor().extract(query)
+        result = AssetLevelLineageExtractor().extract(query)
         print(result)
         assert result == expected
 
@@ -128,7 +128,7 @@ class TestTableLineage():
         testname = "update"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
-        result = tableLineageExtractor().extract(query)
+        result = AssetLevelLineageExtractor().extract(query)
         print(result)
         assert result == expected
 
@@ -136,7 +136,7 @@ class TestTableLineage():
         testname = "update2"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
-        result = tableLineageExtractor().extract(query)
+        result = AssetLevelLineageExtractor().extract(query)
         print(result)
         assert result == expected
 
@@ -144,7 +144,7 @@ class TestTableLineage():
         testname = "updateMultipleTables"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
-        result = tableLineageExtractor().extract(query)
+        result = AssetLevelLineageExtractor().extract(query)
         print(result)
         assert result == expected
 
@@ -152,6 +152,6 @@ class TestTableLineage():
         testname = "updateSetSelect"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
-        result = tableLineageExtractor().extract(query)
+        result = AssetLevelLineageExtractor().extract(query)
         print(result)
         assert result == expected

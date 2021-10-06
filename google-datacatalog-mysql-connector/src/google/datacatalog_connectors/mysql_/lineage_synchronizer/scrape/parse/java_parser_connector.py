@@ -6,7 +6,7 @@ from os import path
 
 class JavaParserConnector:
     """Wrapper for apache calcite parser"""
-    _ParseSql = None
+    _parse_sql = None
 
     def __init__(self):
         if jpype.isJVMStarted():
@@ -17,8 +17,10 @@ class JavaParserConnector:
         path2jar = dir_path + \
             "/extractLineage/target/sql-parser-0.1-jar-with-dependencies.jar"
         
+        path2jar = "/home/natsha/work/dc/google-datacatalog-mysql-connector/calcite-sql-parser/target/sql-parser-0.1-jar-with-dependencies.jar"        
+        
         jpype.startJVM(classpath=[path2jar])
-        JavaParserConnector._ParseSql = import_module('com.ParseSql')
+        JavaParserConnector._parse_sql = import_module('com.ParseSql')
 
 
     def parse_query(self, query: str):
@@ -30,4 +32,4 @@ class JavaParserConnector:
         Returns:
             Apache parsed tree
         """
-        return JavaParserConnector._ParseSql.parseSqlToJson(query)
+        return JavaParserConnector._parse_sql.parseSqlToJson(query)
