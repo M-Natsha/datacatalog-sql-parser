@@ -14,7 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
 class MetadataScraper():
+
     def _create_rdbms_connection(self, connection_args):
         # import at the method level, because this flow is conditional
         # if the connector reads from a CSV file, this is not used.
@@ -25,7 +27,7 @@ class MetadataScraper():
                       user=connection_args['user'],
                       password=connection_args['pass'])
         return con
-    
+
     def _execute_refresh_query(self, cursor, query):
         cursor.execute(query)
         cursor.fetchall()

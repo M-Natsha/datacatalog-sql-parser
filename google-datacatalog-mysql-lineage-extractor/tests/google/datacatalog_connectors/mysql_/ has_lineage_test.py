@@ -1,5 +1,5 @@
-from google.datacatalog_connectors.mysql_.lineage_extractor import asset_level_lineage_extractor
-from .utils import *
+from google.datacatalog_connectors.mysql_.lineage_extractor \
+    import asset_level_lineage_extractor
 
 
 class TestHasLineageChecker():

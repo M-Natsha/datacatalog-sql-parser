@@ -2,7 +2,7 @@ import json
 from types import SimpleNamespace
 from google.datacatalog_connectors.mysql_.parse \
     import lineage
-from google.datacatalog_connectors.mysql_.parse.transform_equ.transform_general import TransformGeneral
+from .transform_equ.transform_general import TransformGeneral
 from .java_parser_connector import JavaParserConnector
 
 import re
@@ -15,9 +15,10 @@ ddlRegex = [
 
 
 class MySqlParser():
+
     def parse_query(self, query: str):
         transformer = TransformGeneral()
-        query = transformer .transform(query)
+        query = transformer.transform(query)
         # parse and convert to object
         javaParser = JavaParserConnector()
         query = javaParser.parse_query(query)

@@ -1,12 +1,11 @@
 import pathlib
-
-from google.datacatalog_connectors.mysql_.lineage_extractor.asset_level_lineage_extractor import AssetLevelLineageExtractor
 import json
 import pytest
 
 scriptDir = pathlib.Path(__file__).parent.resolve()
 
 test_data_dir = str(scriptDir) + "/test_data/"
+
 
 class Helpers:
 

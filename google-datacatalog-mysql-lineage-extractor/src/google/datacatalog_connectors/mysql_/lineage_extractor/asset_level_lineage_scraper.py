@@ -3,6 +3,7 @@ from google.datacatalog_connectors.mysql_.lineage_extractor \
     import logs_reader, asset_level_lineage_extractor
 from google.datacatalog_connectors.mysql_.parse.parse_sql import MySqlParser
 
+
 class AssetLevelLinneagScraper():
 
     def __init__(self, connection):
@@ -23,11 +24,13 @@ class AssetLevelLinneagScraper():
                 if lineage_extractor.query_has_lineage(query):
                     try:
                         log = f'Parsing Query: {query}\n'
-                        parse_tree = self._get_sql_parser()().parse_query(query)
+                        parse_tree = self._get_sql_parser()().parse_query(
+                            query)
                         log += '---------------- Parse Tree ----------------\n'
                         log += str(parse_tree) + '\n'
                         log += '----------------- lineage  -----------------\n'
-                        lineage = lineage_extractor.extract_asset_lineage_from_parsed_tree(parse_tree)
+                        lineage = lineage_extractor \
+                            .extract_asset_lineage_from_parsed_tree(parse_tree)
                         log += str(lineage) + '\n'
                         lineageList.extend(lineage)
                         logging.info(log)
@@ -46,6 +49,6 @@ class AssetLevelLinneagScraper():
 
     def _get_sql_parser(self):
         return MySqlParser
-    
+
     def _get_lineage_extractor(self):
         return asset_level_lineage_extractor.AssetLevelLineageExtractor

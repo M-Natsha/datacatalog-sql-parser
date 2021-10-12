@@ -74,17 +74,18 @@ def handle_from(node):
 
     source = {
         'tables':
-        handle_source(frm, Scope.TABLE),
+            handle_source(frm, Scope.TABLE),
         'columns':
-        reduce(lambda x, y: append_or_extend(x, get_col_info(y, Scope.TABLE)),
-               node.selectList, [])
+            reduce(
+                lambda x, y: append_or_extend(x, get_col_info(y, Scope.TABLE)),
+                node.selectList, [])
     }
 
     return source
 
 
 def handle_source(node, scope):
-    """parses Apache Calcite Node and extract information related to 
+    """parses Apache Calcite Node and extract information related to
 
     Args:
         node ([type]): [description]
@@ -128,8 +129,8 @@ def handle_source(node, scope):
         append_or_extend(sources, handle_source(node.condition, Scope.COLUMN))
 
     if (hasattr(node, 'sourceExpressionList')):
-        append_or_extend(sources,
-                       handle_source(node.sourceExpressionList, Scope.COLUMN))
+        append_or_extend(
+            sources, handle_source(node.sourceExpressionList, Scope.COLUMN))
 
     return compress(sources)
 
@@ -208,12 +209,12 @@ def handle_as(node, scope):
 def handle_func(node, scope):
     body = {
         'operation':
-        'FUNCTION',
+            'FUNCTION',
         'input':
-        reduce(lambda x, y: append_or_extend(x, get_col_info(y, scope)),
-               node.operands, []),
+            reduce(lambda x, y: append_or_extend(x, get_col_info(y, scope)),
+                   node.operands, []),
         'output':
-        node.operator.name
+            node.operator.name
     }
     return body
 

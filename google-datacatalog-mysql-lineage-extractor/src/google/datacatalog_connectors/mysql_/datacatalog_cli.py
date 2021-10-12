@@ -15,15 +15,16 @@
 # limitations under the License.
 
 import argparse
-import os
 import sys
 import logging
 from google.datacatalog_connectors.mysql_.parse.parse_sql import MySqlParser
 from .metadata_scraper import MetadataScraper
-from .lineage_extractor.asset_level_lineage_scraper import AssetLevelLinneagScraper
-from google.datacatalog_connectors.mysql_.parse.parse_sql import MySqlParser
+from .lineage_extractor.asset_level_lineage_scraper \
+    import AssetLevelLinneagScraper
+
 
 class MySQL2DatacatalogCli():
+
     def run(self, argv):
         """Runs the command line."""
 
@@ -31,23 +32,20 @@ class MySQL2DatacatalogCli():
         # Enable logging
         logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
         logging.info('\n\n==============Starting CLI===============')
-        
+
         logging.info('\n\n========== Creating connection ===========')
         # connect to database
         scraper = MetadataScraper()
         con = scraper._create_rdbms_connection(self._get_connection_args(args))
-        
+
         logging.info('\n\n========== Connection created ===========')
-        
+
         # get logs with limit
         scraper = AssetLevelLinneagScraper(con)
         scraper.scrape()
         # parse and print
-        
+
         logging.info('\n\n============== Ending CLI ===============')
-        
-        
-        
 
     def _get_connection_args(self, args):
         return {
@@ -83,10 +81,10 @@ def main():
 
 def exctract_lineage_argv():
     argv = sys.argv[1:]
-    if(len(argv) < 1):
+    if (len(argv) < 1):
         print("Provid Sql query that you want to parse")
         return
-    
+
     sql_query = argv[0]
     extracted = MySqlParser().parse_query(sql_query)
     print(extracted)
