@@ -56,7 +56,7 @@ class AssetLevelLineageExtractor:
         insertIntoKeyword = Commons.findSqlKeyword(text, "INSERT\\s+INTO")
         valuesKeyword = Commons.findSqlKeyword(text, "VALUES")
 
-        return insertIntoKeyword != -1 and valuesKeyword != -1
+        return insertIntoKeyword != None and valuesKeyword != None
 
     def query_has_lineage(self, query: str):
         """Quickly check if a query has lineage information
@@ -127,6 +127,10 @@ class AssetLevelLineageExtractor:
             Lineage parse tree
         """
         parser = self._get_sql_parser()()
-        parseTree = parser.parse_query(query)  # Parse sql query
-        lineage = self.extract_from_node(parseTree)  # extract lineage tree
+        parsed_tree = parser.parse_query(query)  # Parse sql query
+        lineage = self.extract_from_node(parsed_tree)  # extract lineage tree
+        return lineage
+    
+    def extract_asset_lineage_from_parsed_tree(self, parsed_tree):
+        lineage = self.extract_from_node(parsed_tree)  # extract lineage tree
         return lineage
