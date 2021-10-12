@@ -57,6 +57,8 @@ google-datacatalog-mysql-extract-lineage <SQL_QUERY>
 
 ### 4.2. extract lineage from MySQL database entry point
 
+ensure that logs are activated
+
 ```bash
 google-datacatalog-mysql-db-extract-lineage \
 --mysql-host=<HOST> \
