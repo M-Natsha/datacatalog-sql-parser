@@ -1,1 +1,4 @@
-// TODO: write test for lineage
+{
+    "target": ["tasks"],
+    "source": ["T1"]
+}

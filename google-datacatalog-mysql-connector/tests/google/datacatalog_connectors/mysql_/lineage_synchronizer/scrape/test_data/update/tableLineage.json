@@ -1,1 +1,12 @@
-// TODO: write test for lineage
+{
+    "target":[
+       "t1",
+       "t5"
+    ],
+    "source":[
+       "t1",
+       "t5",
+       "t2",
+       "t3"
+    ]
+ }

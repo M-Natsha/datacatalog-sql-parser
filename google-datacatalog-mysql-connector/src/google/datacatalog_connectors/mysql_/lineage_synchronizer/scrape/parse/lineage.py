@@ -1,103 +1,141 @@
-from collections import OrderedDict
 from functools import reduce
-from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape.parse.operation import getColumnInfo, handleSource
-from iteration_utilities import unique_everseen 
+from .operation \
+    import append_or_extend, Scope, get_col_info, handle_source
+from iteration_utilities import unique_everseen
 
-def handleInsert(node):
+
+def get_col_with_unknown_tables(node):
+    if isinstance(node, str):
+        return []
+
+    if isinstance(node, list):
+        result = []
+        for source in node:
+            col = get_col_with_unknown_tables(source)
+            if col is not None:
+                append_or_extend(result, col)
+
+        return result
+
+    if 'target' in node and 'source' in node:
+        return get_col_with_unknown_tables(node['source'])
+
+    if 'tables' in node:
+        return get_col_with_unknown_tables(node['tables'])
+
+    if 'Operation' in node:
+        if node['Operation'] == "GET_COLUMN":
+            if len(node['input']) == 0:
+                return node['output']
+            else:
+                return []
+        else:
+            return get_col_with_unknown_tables(node['input'])
+
+
+def handle_insert(node):
     # extract target data
-    target = {"tables": [getColumnInfo(node.targetTable)], "columns": ['*']}
+    target = {
+        "tables": [get_col_info(node.targetTable, Scope.TABLE)],
+        "columns": []
+    }
 
-    if node.columnList is not None:
-        target['columns'] = reduce(lambda x, y: x + getColumnInfo(y),
-                                   node.columnList, [])
+    if hasattr(node, 'targetColumnList') and len(node.targetColumnList) > 0:
+        append_or_extend(target["columns"], get_col_info(node.targetColumnList, Scope.TABLE))
+    
+    if len(target["columns"]) == 0:
+        target["columns"] = ['*']
+        
+    if hasattr(node, 'columnList') and node.columnList is not None:
+        target['columns'] = reduce(
+            lambda x, y: append_or_extend(x, get_col_info(y, Scope.TABLE)),
+            node.columnList, [])
 
     # exctract source data
-    source = handleSource(node)
+    source = handle_source(node, Scope.TABLE)
 
     return {"source": source, "target": target}
 
 
-def handleSelect(node):
-    return {
-        "source": handleSource(node)
-    }
+def handle_select(node):
+    return {"source": handle_source(node, Scope.TABLE)}
 
 
-def handleQuery(node):
-    return extractLineage(node.query)
+def handle_query(node):
+    return extract_lineage(node.query)
 
 
-def handleCreateTable(node):
+def handle_create_table(node):
     res = {
         "target": {
             "tables": [],
             "columns": []
         },
-        "source": handleSource(node.query)
+        "source": handle_source(node, Scope.TABLE)
     }
 
-    res['target']['tables'] = [getColumnInfo(node.name)]
+    res['target']['tables'] = [get_col_info(node.name, Scope.TABLE)]
 
     if hasattr(node, 'columnList') and node.columnList is not None:
-        res['target']['columns'] = reduce(lambda x, y: x + [getColumnInfo(y)],
-                                          node.columnList, [])
+        res['target']['columns'] = reduce(
+            lambda x, y: x + [get_col_info(y, Scope.TABLE)], node.columnList,
+            [])
     else:
         res['target']['columns'] = ['*']
 
     return res
 
 
-def extractLineage(node):
+def extract_lineage(node):
     if hasattr(node, 'operator'):
         if node.operator.kind == "CREATE_TABLE":
-            return handleCreateTable(node)
+            return handle_create_table(node)
 
     if hasattr(node, 'targetTable'):
-        return handleInsert(node)
+        return handle_insert(node)
 
     if hasattr(node, 'selectList'):
-        return handleSelect(node)
+        return handle_select(node)
 
     if hasattr(node, 'query'):
-        return handleQuery(node)
+        return handle_query(node)
 
     return False
 
 
-def removeDuplicates(myList: list):
+def remove_duplicates(myList: list):
+    """removes duplicates from a list and reserve its order"""
     return list(unique_everseen(myList))
 
-def combineLineageEvents(*lineageEvents: dict):
-    combinedEvents = {
-        'target' :[], 
-        'source': []
-    }
-    
+
+def combine_lineage_events(*lineageEvents: dict):
+    combinedEvents = {'target': [], 'source': []}
+
     for event in lineageEvents:
         if 'target' in event:
-            target =  event['target'] 
-            if not isinstance(target,list):
+            target = event['target']
+            if not isinstance(target, list):
                 target = [event['target']]
-                
+
             combinedEvents['target'] += target
 
         if 'source' in event:
-            source =  event['source'] 
-            if not isinstance(source,list):
+            source = event['source']
+            if not isinstance(source, list):
                 source = [event['source']]
             combinedEvents['source'] += source
-    
-    # ensure that source are unique 
-    combinedEvents['target'] = removeDuplicates(combinedEvents['target'])
-    combinedEvents['source'] = removeDuplicates(combinedEvents['source'])
-    
+
+    # ensure that source are unique
+    combinedEvents['target'] = remove_duplicates(combinedEvents['target'])
+    combinedEvents['source'] = remove_duplicates(combinedEvents['source'])
+
     return combinedEvents
 
-def extractLineageFromList(nodelist):
+
+def extract_lineage_from_list(nodelist):
     lineageTreeList = []
 
     for nodeTree in nodelist:
-        lineageTreeList.append(extractLineage(nodeTree))
-        
-    return combineLineageEvents(*lineageTreeList)
-         
+        lineageTreeList.append(extract_lineage(nodeTree))
+
+    return combine_lineage_events(*lineageTreeList)

@@ -1,1 +1,10 @@
-// TODO: write test for lineage
+{
+    "target":[
+       "cars",
+       "users"
+    ],
+    "source":[
+       "cars",
+       "users"
+    ]
+ }

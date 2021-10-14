@@ -1,1 +1,10 @@
-// TODO: write test for lineage
+{
+    "target":[
+       "messages",
+       "usersmessages"
+    ],
+    "source":[
+       "messages",
+       "usersmessages"
+    ]
+ }

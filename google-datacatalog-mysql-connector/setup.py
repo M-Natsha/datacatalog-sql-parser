@@ -38,8 +38,8 @@ setuptools.setup(
     include_package_data=True,
     install_requires=('mysql-connector-python',
                       'google-datacatalog-rdbms-connector>=0.12.0<0.13.0',
-                      'iteration-utilities'),
-    setup_requires=('pytest-runner', 'jpype1'),
+                      'iteration-utilities','jpype1'),
+    setup_requires=('pytest-runner'),
     tests_require=(
         'pytest-cov', 'google-datacatalog-connectors-commons-test>=0.7.0<0.8.0'),
     classifiers=(
