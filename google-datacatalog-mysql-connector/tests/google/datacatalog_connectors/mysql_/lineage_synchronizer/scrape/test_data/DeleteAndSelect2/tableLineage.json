@@ -1,4 +1,0 @@
-{
-    "target": ["tableA"],
-    "source": ["tableA", "tableB"]
-}
