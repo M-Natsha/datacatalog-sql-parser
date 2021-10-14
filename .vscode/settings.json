@@ -8,9 +8,10 @@
     ],
     "python.testing.pytestEnabled": false,
     "python.testing.unittestEnabled": true,
-    "python.linting.enabled": true,
+    "python.linting.enabled": false,
     "python.analysis.extraPaths": [
         "./google-datacatalog-mysql-connector/src"
     ],
-    "python.linting.flake8Enabled": true
+    "python.linting.flake8Enabled": true,
+    "restructuredtext.confPath": "${workspaceFolder}/datacatalog-lineage-v1-py/docs"
 }

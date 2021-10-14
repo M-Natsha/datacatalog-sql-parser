@@ -1,0 +1,30 @@
+{
+   "target":[
+      {
+         "tables":[
+            "tableA"
+         ],
+         "columns":[
+            "*"
+         ]
+      }
+   ],
+   "source":[
+      {
+         "tables":{
+            "operation":"JOIN",
+            "input":[
+               "tableA",
+               {
+                  "operation":"AS",
+                  "input":"tableB",
+                  "output":"u"
+               }
+            ]
+         },
+         "columns":[
+            "*"
+         ]
+      }
+   ]
+}

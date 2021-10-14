@@ -1,0 +1,27 @@
+{
+   "target":[
+      {
+         "tables":[
+            "tasks"
+         ],
+         "columns":[
+            "task_id",
+            "title",
+            "start_date",
+            "due_date",
+            "status",
+            "priority",
+            "description",
+            "created_at"
+         ]
+      }
+   ],
+   "source":[
+      {
+         "tables":"T1",
+         "columns":[
+            "*"
+         ]
+      }
+   ]
+}

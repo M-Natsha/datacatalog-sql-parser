@@ -1,9 +1,0 @@
-{
-   "target":[
-      "random_table"
-   ],
-   "source":[
-      "users",
-      "cars"
-   ]
-}

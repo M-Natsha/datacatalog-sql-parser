@@ -1,0 +1,48 @@
+import logging
+from google.datacatalog_connectors.mysql_.scrape import metadata_scraper
+from google.datacatalog_connectors.mysql_.lineage_synchronizer.scrape import logs_reader, table_lineage_extractor
+
+
+class tableLineageScraper():
+    def __init__(self, connection_args):
+        self.connection_args = connection_args
+
+    def scrape(self):
+        # get connection
+        connector = self._get_connector()()
+        connection = connector.get_connection(self.connection_args)
+
+        # read logs
+        reader = self._get_log_reader()(connection)
+        logs = reader.readLogs()
+
+        # extract lineage
+        lineageList = []
+        lineage_extractor = self._get_lineage_extractor()()
+
+        for log in logs:
+            if log['command_type'] == 'Query':
+                query = log['argument'].decode('ascii')
+                if lineage_extractor.queryHasLineage(query):
+                    try:
+                        lineage = lineage_extractor.extract(query)
+                        print(lineage)
+                        lineageList.extend(lineage)
+                    except Exception as e:
+                        logging.error("Parse error: Couldn't parse " + query)
+                        print(e)
+                        
+                else:
+                    logging.info("Query has no lineage (Skipped): " + query)
+
+        # return lineage info
+        return lineageList
+
+    def _get_connector(self):
+        return metadata_scraper.MetadataScraper
+
+    def _get_log_reader(self):
+        return logs_reader.logsReader
+
+    def _get_lineage_extractor(self):
+        return table_lineage_extractor.tableLineageExtractor
