@@ -4,29 +4,85 @@
    ],
    "source":[
       {
-         "tables":{
-            "operation":"UNION",
-            "input":[
-               {
-                  "tables":"osm",
-                  "columns":[
-                     "*"
-                  ]
-               },
-               {
-                  "tables":{
-                     "operation":"JOIN",
-                     "input":[
-                        "osm",
-                        "t2"
+         "tables":[
+            {
+               "operation":"UNION",
+               "input":[
+                  {
+                     "tables":[
+                        {
+                           "tables":[
+                              "osm",
+                              {
+                                 "Operation":"GET_COLUMN",
+                                 "input":[
+                                    
+                                 ],
+                                 "output":[
+                                    "tag"
+                                 ]
+                              }
+                           ],
+                           "columns":[
+                              "objectid"
+                           ]
+                        }
+                     ],
+                     "columns":[
+                        "*"
                      ]
                   },
-                  "columns":[
-                     "*"
-                  ]
-               }
-            ]
-         },
+                  {
+                     "tables":[
+                        {
+                           "tables":[
+                              {
+                                 "operation":"JOIN",
+                                 "input":[
+                                    "osm",
+                                    "t2"
+                                 ]
+                              },
+                              {
+                                 "Operation":"GET_COLUMN",
+                                 "input":[
+                                    "osm"
+                                 ],
+                                 "output":[
+                                    "id"
+                                 ]
+                              },
+                              {
+                                 "Operation":"GET_COLUMN",
+                                 "input":[
+                                    "t2"
+                                 ],
+                                 "output":[
+                                    "id"
+                                 ]
+                              },
+                              {
+                                 "Operation":"GET_COLUMN",
+                                 "input":[
+                                    
+                                 ],
+                                 "output":[
+                                    "tag"
+                                 ]
+                              }
+                           ],
+                           "columns":[
+                              "objectid"
+                           ]
+                        }
+                     ],
+                     "columns":[
+                        "*"
+                     ]
+                  }
+               ]
+            }
+         ],
          "columns":[
             "*"
          ]

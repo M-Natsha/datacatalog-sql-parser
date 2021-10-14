@@ -13,6 +13,6 @@ UPDATE
     FROM
       t2
       LEFT JOIN t3 ON x = y
-  ) as t3
+  ) as t6
 SET
-  t1 = 5
+  t1.x = 5
