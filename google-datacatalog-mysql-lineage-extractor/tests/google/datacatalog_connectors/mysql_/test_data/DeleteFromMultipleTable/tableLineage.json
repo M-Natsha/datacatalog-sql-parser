@@ -1,0 +1,10 @@
+{
+    "target":[
+       "messages",
+       "usersmessages"
+    ],
+    "source":[
+       "messages",
+       "usersmessages"
+    ]
+ }
