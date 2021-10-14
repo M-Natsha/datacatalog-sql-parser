@@ -41,11 +41,12 @@ def handle_insert(node):
     }
 
     if hasattr(node, 'targetColumnList') and len(node.targetColumnList) > 0:
-        append_or_extend(target["columns"], get_col_info(node.targetColumnList, Scope.TABLE))
-    
+        append_or_extend(target["columns"],
+                         get_col_info(node.targetColumnList, Scope.TABLE))
+
     if len(target["columns"]) == 0:
         target["columns"] = ['*']
-        
+
     if hasattr(node, 'columnList') and node.columnList is not None:
         target['columns'] = reduce(
             lambda x, y: append_or_extend(x, get_col_info(y, Scope.TABLE)),

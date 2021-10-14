@@ -1,5 +1,5 @@
-from google.datacatalog_connectors.mysql_.lineage_extractor.asset_level_lineage_extractor import AssetLevelLineageExtractor
-from .utils import *
+from google.datacatalog_connectors.mysql_.lineage_extractor \
+    .asset_level_lineage_extractor import AssetLevelLineageExtractor
 
 
 class TestTableLineage():
@@ -102,14 +102,6 @@ class TestTableLineage():
 
     def test_simple_insert_from(self, helpers):
         testname = "simpleInsertFrom"
-        query = helpers.getQueryForTest(testname)
-        expected = helpers.getTableLineageResultForTest(testname)
-        result = AssetLevelLineageExtractor().extract(query)
-        print(result)
-        assert result == expected
-
-    def test_simple_select(self, helpers):
-        testname = "simpleSelect"
         query = helpers.getQueryForTest(testname)
         expected = helpers.getTableLineageResultForTest(testname)
         result = AssetLevelLineageExtractor().extract(query)

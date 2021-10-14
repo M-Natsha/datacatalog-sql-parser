@@ -1,5 +1,4 @@
 from google.datacatalog_connectors.mysql_.parse import parse_sql
-from .utils import *
 
 
 class TestSqlParser():

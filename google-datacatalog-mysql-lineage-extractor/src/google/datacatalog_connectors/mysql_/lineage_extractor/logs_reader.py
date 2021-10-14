@@ -4,7 +4,7 @@ class LogsReader():
         self._sqlConnection = sqlConnection
 
     def read_logs(self):
-        """Returns MySQL logs 
+        """Returns MySQL logs
         Note: table logs must be activated
         """
         mycursor = self._sqlConnection.cursor(dictionary=True)
