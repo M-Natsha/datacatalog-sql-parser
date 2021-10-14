@@ -32,9 +32,15 @@ setuptools.setup(
         '': 'src'
     },
     include_package_data=True,
-    install_requires=('iteration-utilities', 'jpype1'),
+    install_requires=('iteration-utilities', 'jpype1', 'mysql-connector'),
     setup_requires=('pytest-runner'),
     tests_require=('pytest-cov'),
+    entry_points={
+        'console_scripts': [
+            'google-datacatalog-mysql-db-extract-lineage = google.datacatalog_connectors.mysql_:main',
+            'google-datacatalog-mysql-extract-lineage = google.datacatalog_connectors.mysql_:exctract_lineage_argv'
+        ],
+    },
     classifiers=(
         release_status,
         'Programming Language :: Python :: 3.7',

@@ -1,10 +1,12 @@
 import re
 from typing import Sequence
-from google.datacatalog_connectors.mysql_.parse.transform_equ.commons import Commons
-
+from google.datacatalog_connectors.mysql_.parse.transform_equ.commons \
+    import Commons
 import google.datacatalog_connectors.mysql_.parse.parse_sql as parse_sql
-from google.datacatalog_connectors.mysql_.parse.lineage import remove_duplicates
-from google.datacatalog_connectors.mysql_.parse.operation import append_or_extend
+from google.datacatalog_connectors.mysql_.parse.lineage \
+    import remove_duplicates
+from google.datacatalog_connectors.mysql_.parse.operation \
+    import append_or_extend
 
 noLineageQueryPatterns = [
     re.compile("\\s*SET\\s+((?s).*)", re.IGNORECASE),
@@ -22,6 +24,7 @@ noLineageQueryPatterns = [
 
 
 class AssetLevelLineageExtractor:
+
     @staticmethod
     def _remove_aliases(myList: Sequence) -> Sequence[str]:
         """ Remove alias names of the tables
@@ -56,7 +59,7 @@ class AssetLevelLineageExtractor:
         insertIntoKeyword = Commons.findSqlKeyword(text, "INSERT\\s+INTO")
         valuesKeyword = Commons.findSqlKeyword(text, "VALUES")
 
-        return insertIntoKeyword != -1 and valuesKeyword != -1
+        return insertIntoKeyword is not None and valuesKeyword is not None
 
     def query_has_lineage(self, query: str):
         """Quickly check if a query has lineage information
@@ -127,6 +130,10 @@ class AssetLevelLineageExtractor:
             Lineage parse tree
         """
         parser = self._get_sql_parser()()
-        parseTree = parser.parse_query(query)  # Parse sql query
-        lineage = self.extract_from_node(parseTree)  # extract lineage tree
+        parsed_tree = parser.parse_query(query)  # Parse sql query
+        lineage = self.extract_from_node(parsed_tree)  # extract lineage tree
+        return lineage
+
+    def extract_asset_lineage_from_parsed_tree(self, parsed_tree):
+        lineage = self.extract_from_node(parsed_tree)  # extract lineage tree
         return lineage
