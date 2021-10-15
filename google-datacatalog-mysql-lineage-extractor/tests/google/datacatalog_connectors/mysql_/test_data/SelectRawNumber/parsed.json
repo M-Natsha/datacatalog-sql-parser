@@ -1,0 +1,34 @@
+{
+   "target":[
+      
+   ],
+   "source":[
+      {
+         "tables":[
+            "dept",
+            "emp",
+            {
+               "Operation":"GET_COLUMN",
+               "input":[
+                  "emp"
+               ],
+               "output":[
+                  "deptno"
+               ]
+            },
+            {
+               "Operation":"GET_COLUMN",
+               "input":[
+                  "dept"
+               ],
+               "output":[
+                  "deptno"
+               ]
+            }
+         ],
+         "columns":[
+            "*"
+         ]
+      }
+   ]
+}

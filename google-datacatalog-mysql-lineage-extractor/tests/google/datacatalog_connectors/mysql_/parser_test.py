@@ -147,3 +147,19 @@ class TestSqlParser():
         result = parse_sql.MySqlParser().parse_query(query)
         print(result)
         assert result == expected
+
+    def test_select_where_like(self, helpers):
+        testname = "SelectWhereLike"
+        query = helpers.getQueryForTest(testname)
+        expected = helpers.getParsedResultForTest(testname)
+        result = parse_sql.MySqlParser().parse_query(query)
+        print(result)
+        assert result == expected
+
+    def test_select_raw_number(self, helpers):
+        testname = "SelectRawNumber"
+        query = helpers.getQueryForTest(testname)
+        expected = helpers.getParsedResultForTest(testname)
+        result = parse_sql.MySqlParser().parse_query(query)
+        print(result)
+        assert result == expected

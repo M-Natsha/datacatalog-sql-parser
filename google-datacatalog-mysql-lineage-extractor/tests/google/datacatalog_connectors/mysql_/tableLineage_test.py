@@ -147,3 +147,19 @@ class TestTableLineage():
         result = AssetLevelLineageExtractor().extract(query)
         print(result)
         assert result == expected
+
+    def test_select_where_like(self, helpers):
+        testname = "SelectWhereLike"
+        query = helpers.getQueryForTest(testname)
+        expected = helpers.getTableLineageResultForTest(testname)
+        result = AssetLevelLineageExtractor().extract(query)
+        print(result)
+        assert result == expected
+
+    def test_select_raw_number(self, helpers):
+        testname = "SelectRawNumber"
+        query = helpers.getQueryForTest(testname)
+        expected = helpers.getTableLineageResultForTest(testname)
+        result = AssetLevelLineageExtractor().extract(query)
+        print(result)
+        assert result == expected
