@@ -146,7 +146,10 @@ def handle_union(node, scope):
 def get_col_info(node, scope):
     # check if its an array
     if hasattr(node, 'value'):
-        return [node.value.stringValue]
+        if(hasattr(node.value, 'stringValue')):
+            return [node.value.stringValue]
+        else:
+            return []  # if its a number or a value ignore it
 
     if isinstance(node, list):
         colInfo = []
